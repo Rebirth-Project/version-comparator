@@ -11,7 +11,7 @@ Version Comparator is an ultra micro library written in java that let you compar
 
 ## Main features
 
-* micro library
+* micro library (< 15k jar)
 * absolutely trival to use
 * no external dependencies 
 * the code is clean, testable, compact and very easy to understand and maintain
