@@ -18,7 +18,7 @@ Version Comparator is an ultra micro library written in java that let you compar
 * is completely covered with a large number of unit tests
 
 ## Goals
-  * Provide a simple-to-use library to allow messaging within the app's objects
+  * Provide a simple-to-use library to simplify version comparison
   * Make the code as cleaner and testable as possible
   * Don't rely on any other third-party library except than standard Java libraries
   * Obtain a jar as small as possible
