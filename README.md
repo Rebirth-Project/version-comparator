@@ -73,7 +73,7 @@ VersionComparator vc = new VersionComparatorBuilder().build();
 //version to check is in this format X.Y.Z
 VersionComparator vc = new VersionComparatorBuilder().useMinimalVersionParser().build();
 
-//create a semantic version comparator [https://semver.org/](https://semver.org/)
+//create a semantic version comparator (https://semver.org/)
 //version to check is in this format X.Y.Z-QUALIFIER+buildmetadata
 VersionComparator vc = new VersionComparatorBuilder().useStrictSemanticVersionParser().build();
 
