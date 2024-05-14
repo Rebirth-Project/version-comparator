@@ -16,6 +16,7 @@ Version Comparator is an ultra micro library written in java that let you compar
 * no external dependencies 
 * the code is clean, testable, compact and very easy to understand and maintain
 * is completely covered with a large number of unit tests
+* easily extendible
 
 ## Goals
   * Provide a simple-to-use library to simplify version comparison
@@ -64,7 +65,7 @@ The qualifier types recognized by the relaxed parser are the following and in th
 
 ``` java
 
-//create a default relaxed semantic version comparato 
+//create a default relaxed semantic version comparator
 //version to check is in this format X.Y.Z-QUALIFIER
 VersionComparator vc = new VersionComparatorBuilder().build();
 
@@ -72,7 +73,7 @@ VersionComparator vc = new VersionComparatorBuilder().build();
 //version to check is in this format X.Y.Z
 VersionComparator vc = new VersionComparatorBuilder().useMinimalVersionParser().build();
 
-//create a semantic version comparator [https://semver.org/]https://semver.org/()
+//create a semantic version comparator [https://semver.org/](https://semver.org/)
 //version to check is in this format X.Y.Z-QUALIFIER+buildmetadata
 VersionComparator vc = new VersionComparatorBuilder().useStrictSemanticVersionParser().build();
 
