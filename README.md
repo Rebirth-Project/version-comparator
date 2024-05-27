@@ -46,7 +46,7 @@ dependencies {
 
 ## Introduction
 
-The version comparator can compare versions provided in string format. Currently, the library checks whether a passed version conforms to the internal parser rules. It throws an exception if an invalid version is provided as input. the library in its current state of the art has three different parsers to choose from:
+The version comparator can compare versions provided in string format. Currently, the library checks whether a passed version conforms to the internal parser rules. It throws an exception if an invalid version is provided as input. The library in its current state of the art has three different parsers to choose from:
 
 1. a minimal parser (version format X.Y.Z)
 2. a semantic version parser ( the standard semantic version you can find here  [https://semver.org/](https://semver.org/), that basically parses this version format X.Y.Z-QUALIFIER+buildmetadata)
