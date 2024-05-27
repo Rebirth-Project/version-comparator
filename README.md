@@ -1,5 +1,5 @@
 # Version Comparator ![Version Comparator Icon](icon/versioncomparator.png)
-Version Comparator is an ultra micro library written in java that let you compare version numbers. 
+Version Comparator is an ultra-micro library written in java that lets you compare version numbers. 
 
 **```Latest Version 1.0.0```**
 
@@ -11,17 +11,17 @@ Version Comparator is an ultra micro library written in java that let you compar
 
 ## Main features
 
-* micro library (< 15k jar)
-* absolutely trival to use
-* no external dependencies 
-* the code is clean, testable, compact and very easy to understand and maintain
-* is completely covered with a large number of unit tests
-* easily extendible
+* Micro library (< 15k jar)
+* Absolutely trivial to use
+* No external dependencies 
+* The code is clean, testable, compact and very easy to understand and maintain
+* Completely covered with a large number of unit tests
+* Easily extendable
 
 ## Goals
   * Provide a simple-to-use library to simplify version comparison
-  * Make the code as cleaner and testable as possible
-  * Don't rely on any other third-party library except than standard Java libraries
+  * Make the code as clean and testable as possible
+  * Don't rely on any other third-party library except for standard Java libraries
   * Obtain a jar as small as possible
   * Write good documentation for the library usage
 
@@ -46,11 +46,11 @@ dependencies {
 
 ## Introduction
 
-The version comparator can compare versions provided in string format. Currently, the library checks whether a passed version conforms to the internal parser rules. It throws an exception if an invalid version is provided as input. The library at its state of the art has three different parsers to choose from:
+The version comparator can compare versions provided in string format. Currently, the library checks whether a passed version conforms to the internal parser rules. It throws an exception if an invalid version is provided as input. the library in its current state of the art has three different parsers to choose from:
 
 1. a minimal parser (version format X.Y.Z)
 2. a semantic version parser ( the standard semantic version you can find here  [https://semver.org/](https://semver.org/), that basically parses this version format X.Y.Z-QUALIFIER+buildmetadata)
-3. a relaxed semantic version parser that is the default choice to build the comparator and is basically the version standard used by Maven artifacts (version format X.Y.Z-QUALIFIER where the qualifier should be an unique type string).
+3. a relaxed semantic version parser that is the default choice to build the comparator and is basically the version standard used by Maven artifacts (version format X.Y.Z-QUALIFIER where the qualifier should be a unique type string).
 The qualifier types recognized by the relaxed parser are the following and in this order of priority: 
 
  - SNAPSHOT
