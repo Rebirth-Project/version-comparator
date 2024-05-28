@@ -25,6 +25,7 @@ public class VersioReleaseTypesTest {
     @ParameterizedTest
     @CsvSource({
         ".DEV,true",
+        "-DEV,true",
         "123,true",
         "123.SNAPSHOT,true",
         "123.SNAPSHOT.PRE_ALPHA,false",
