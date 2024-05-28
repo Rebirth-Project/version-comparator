@@ -35,7 +35,7 @@ public class StrictSemanticVersionParser implements VersionParser {
     /**
      * The complete regex that matches the semantic version structure.
      */
-    private final String regex = "(?i)^(?<major>0|[1-9]\\d{0," + MAX_DIGITS + "})\\.(?<minor>0|[1-9]\\d{0," + MAX_DIGITS + "})\\.(?<patch>0|[1-9]\\d{0," + MAX_DIGITS + "})(?:-(?<qualifier>(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$";
+    private final Pattern pattern = Pattern.compile("(?i)^(?<major>0|[1-9]\\d{0," + MAX_DIGITS + "})\\.(?<minor>0|[1-9]\\d{0," + MAX_DIGITS + "})\\.(?<patch>0|[1-9]\\d{0," + MAX_DIGITS + "})(?:-(?<qualifier>(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$");
 
     /**
      * The implemented method to parse a semantic version
@@ -46,7 +46,6 @@ public class StrictSemanticVersionParser implements VersionParser {
      */       
     @Override
     public Version parseVersion(String version) throws IllegalArgumentException {
-        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(version);
 
         if (matcher.matches()) {

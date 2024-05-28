@@ -26,7 +26,6 @@ public class RelaxedSemanticVersionParserTest {
 
     @ParameterizedTest
     @CsvSource({
-        "1.0",
         "0.0.4",
         "1.2.3",
         "10.20.30",
@@ -45,8 +44,13 @@ public class RelaxedSemanticVersionParserTest {
         "1.2.3.DEV",
         "1.2.3DEV",
         "1.2.3.FINAL",
-        "1.2-RC-SNAPSHOFT",
-        "1.2-SNAPSHOT"
+        "1.2.6-RC-SNAPSHOFT",
+        "1.2.7-SNAPSHOT",
+        "1.0.0-alpha12",
+        "1.0.0-M2",
+        "1.2.3-0123",
+        "2.0.0-RC3",
+        "1.2.3-0123.0123"
     })
     public void validVersionTest(String version) {
         parser.parseVersion(version);
@@ -54,9 +58,8 @@ public class RelaxedSemanticVersionParserTest {
 
     @ParameterizedTest
     @CsvSource({
+        "1.0",
         "1",
-        "1.2.3-0123",
-        "1.2.3-0123.0123",
         "1.1.2+.123",
         "+invalid",
         "-invalid",

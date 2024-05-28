@@ -101,6 +101,6 @@ public enum VersionReleaseTypes {
         String qualifiers = String.join("|", getValues());
         //(?i) means case insensitive match
         //The Release Type is not mandatory but if is present then must be unique.
-        return "(?i)^(?=.*\\b(?:" + qualifiers + ")\\b|\\b\\s*\\b)(?!.*\\b(?:" + qualifiers + ")\\b.*\\b(?:" + qualifiers + ")\\b).*$";
+        return "(?i)^(?!.*\\b(?:" + qualifiers + ")\\b.*\\b(?:" + qualifiers + ")\\b).*$";
     }
 }

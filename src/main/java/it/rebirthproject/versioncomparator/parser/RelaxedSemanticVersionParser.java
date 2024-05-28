@@ -33,8 +33,7 @@ public class RelaxedSemanticVersionParser implements VersionParser {
     /**
      * The complete regex that matches the relaxed semantic version structure.
      */
-    private final String regex = "(?i)^(?<major>0|[1-9]\\d{0," + MAX_DIGITS + "})\\.(?<minor>0|[1-9]\\d{0," + MAX_DIGITS + "})(?:\\.(?<patch>0|[1-9]\\d{0," + MAX_DIGITS + "}))?((?:[.-]?(?<qualifier>[a-zA-Z]+(?:[.-](?![.-])[a-zA-Z0-9]+)*)))?$";
-
+    private final Pattern pattern = Pattern.compile("(?i)^(?<major>0|[1-9]\\d{0," + MAX_DIGITS + "})\\.(?<minor>0|[1-9]\\d{0," + MAX_DIGITS + "})(?:\\.(?<patch>0|[1-9]\\d{0," + MAX_DIGITS + "}))(?:(?<qualifier>([a-zA-Z.-](?!.*[.-]{2})[a-zA-Z0-9.-]*)))?$");   
     /**
      * The implemented method to parse a relaxed semantic version
      *
@@ -45,15 +44,13 @@ public class RelaxedSemanticVersionParser implements VersionParser {
      */
     @Override
     public Version parseVersion(String version) throws IllegalArgumentException {
-        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(version);
 
         if (matcher.matches()) {
             Long major = matcher.group("major") != null ? Long.valueOf(matcher.group("major")) : -1;
             Long minor = matcher.group("minor") != null ? Long.valueOf(matcher.group("minor")) : -1;
             Long patch = matcher.group("patch") != null ? Long.valueOf(matcher.group("patch")) : -1;
-            String qualifier = matcher.group("qualifier");
-
+            String qualifier = matcher.group("qualifier");           
             if (qualifier != null && !qualifier.trim().isEmpty() && !qualifier.matches(VersionReleaseTypes.getRegexToCheckReleaseTypeUniqueness())) {
                 throw new IllegalArgumentException("Invalid relaxed semantic version string format: release type is not unique in qualifier" + version);
             }
