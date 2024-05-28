@@ -33,8 +33,8 @@ public class VersionComparatorTest {
         "1.0.0, 1.0.1, -1",
         "1.0.0, 1.2.0, -1"                
     })
-    public void compareVersionsMinimalVersionTest(String version1, String version2, int expectedComparisonResult) {
-        int actualComparisonResult = new VersionComparator(new MinimalVersionParser()).compareVersions(version1, version2);
+    public void compareMinimalVersionTest(String version1, String version2, int expectedComparisonResult) {
+        int actualComparisonResult = new VersionComparator(new MinimalVersionParser()).compare(version1, version2);
         assertEquals(expectedComparisonResult, actualComparisonResult);
     }
     
@@ -58,8 +58,8 @@ public class VersionComparatorTest {
         "111.27.0, 13.40.888FINal, 1",
         "111.27.0, 111.27.0FINal-TTT, -1"    
     })
-    public void compareVersionsRelaxedSemanticVersionTest(String version1, String version2, int expectedComparisonResult) {
-        int actualComparisonResult = new VersionComparator(new RelaxedSemanticVersionParser()).compareVersions(version1, version2);
+    public void compareRelaxedSemanticVersionTest(String version1, String version2, int expectedComparisonResult) {
+        int actualComparisonResult = new VersionComparator(new RelaxedSemanticVersionParser()).compare(version1, version2);
         assertEquals(expectedComparisonResult, actualComparisonResult);
     }
     
@@ -82,8 +82,8 @@ public class VersionComparatorTest {
         "111.27.0, 13.40.888-FINal, 1",
         "111.27.0, 111.27.0-FINal-TTT, -1"    
     })
-    public void compareVersionsStrictSemanticVersionTest(String version1, String version2, int expectedComparisonResult) {
-        int actualComparisonResult = new VersionComparator(new StrictSemanticVersionParser()).compareVersions(version1, version2);
+    public void compareStrictSemanticVersionTest(String version1, String version2, int expectedComparisonResult) {
+        int actualComparisonResult = new VersionComparator(new StrictSemanticVersionParser()).compare(version1, version2);
         assertEquals(expectedComparisonResult, actualComparisonResult);
     }
 }

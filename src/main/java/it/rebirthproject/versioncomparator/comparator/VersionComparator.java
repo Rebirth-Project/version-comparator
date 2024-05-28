@@ -20,12 +20,13 @@ import it.rebirthproject.versioncomparator.version.Version;
 import it.rebirthproject.versioncomparator.version.VersionReleaseTypes;
 import it.rebirthproject.versioncomparator.parser.VersionParser;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
 
 /**
  * This class is used to compare two versions in String format.
  */
-final public class VersionComparator {
+final public class VersionComparator implements Comparator<String> {
 
     /**
      * The version parser used to match a string formatted version.
@@ -57,21 +58,21 @@ final public class VersionComparator {
     /**
      * The main method used to compare two string formatted versions. It parses
      * the versions' strings into valid {@link Version} And if no error occurs
-     * then it start comparing the various parts of the versions. 
-     * We have basically three parts composing a valid version: 
-     * - The number part (ex: 1.0.0) 
-     * - The qualifier (ex: STABLE, FINAL,RC)
-     * - The build metadata (ex: build5678)
+     * then it start comparing the various parts of the versions. We have
+     * basically three parts composing a valid version: - The number part (ex:
+     * 1.0.0) - The qualifier (ex: STABLE, FINAL,RC) - The build metadata (ex:
+     * build5678)
      *
      * The various parts are parsed using the chose version parser.
-     * 
+     *
      * @param version1 The first version to compare.
      * @param version2 The second version to compare.
      *
      * @return An integer indicating whether the first version is greater (1),
      * equal (0), or lesser (-1) than the second version.
      */
-    public int compareVersions(String version1, String version2) throws IllegalArgumentException {
+    @Override
+    public int compare(String version1, String version2) throws IllegalArgumentException {
         Version firstVersion = versionParser.parseVersion(version1);
         Version secondVersion = versionParser.parseVersion(version2);
 
@@ -145,17 +146,19 @@ final public class VersionComparator {
             return firstVersionQualifier.compareToIgnoreCase(secondVersionQualifier);
         }
     }
-    
-     /**
-     * This method takes two String formatted version's build metadata and compares
-     * them in a lexical way.
+
+    /**
+     * This method takes two String formatted version's build metadata and
+     * compares them in a lexical way.
      *
-     * @param firstVersionBuildMetadata The first version's build metadata to compare.
-     * @param secondVersionBuildMetadata The second version's build metadata to compare.
+     * @param firstVersionBuildMetadata The first version's build metadata to
+     * compare.
+     * @param secondVersionBuildMetadata The second version's build metadata to
+     * compare.
      *
-     * @return An integer indicating whether the first version's build metadata is
-     * greater (1), equal (0), or lesser (-1) than the second version's
-     * build metadata.
+     * @return An integer indicating whether the first version's build metadata
+     * is greater (1), equal (0), or lesser (-1) than the second version's build
+     * metadata.
      */
     private int compareBuildMetadata(String firstVersionBuildMetadata, String secondVersionBuildMetadata) {
         if (firstVersionBuildMetadata == null && secondVersionBuildMetadata == null) {
@@ -175,11 +178,11 @@ final public class VersionComparator {
 
     /**
      * This method compares two version qualifiers in string format.
-     * 
+     *
      * @param firstVersionQualifier The first version's qualifier to compare.
      * @param secondVersionQualifier The second version's qualifier to compare.
-     * 
-     * @return  An integer indicating whether the first version's qualifier is
+     *
+     * @return An integer indicating whether the first version's qualifier is
      * greater (1), equal (0), or lesser (-1) than the second version's
      * qualifier.
      */
@@ -201,11 +204,14 @@ final public class VersionComparator {
     }
 
     /**
-     * This method checks if a unique qualifier is of type {VersionReleaseTypes.STABLE} or {VersionReleaseTypes.FINAL}
+     * This method checks if a unique qualifier is of type
+     * {VersionReleaseTypes.STABLE} or {VersionReleaseTypes.FINAL}
      *
      * @param qualifierType The qualifier's string to check.
      *
-     * @return A boolean value that is true if the qualifier contains the type {VersionReleaseTypes.STABLE} or {VersionReleaseTypes.FINAL}, and false otherwise.
+     * @return A boolean value that is true if the qualifier contains the type
+     * {VersionReleaseTypes.STABLE} or {VersionReleaseTypes.FINAL}, and false
+     * otherwise.
      */
     private boolean isStableOrFinal(String qualifierType) {
         String qualifierTypeUpper = qualifierType.toUpperCase();
