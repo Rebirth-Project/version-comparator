@@ -1,7 +1,7 @@
 # Version Comparator ![Version Comparator Icon](icon/versioncomparator.png)
 Version Comparator is an ultra-micro library written in java that lets you compare version numbers. 
 
-**```Latest Version 1.0.0```**
+**```Latest Version 1.0.1```**
 
 ![Build Status](https://github.com/Rebirth-Project/version-comparator/actions/workflows/build.yml/badge.svg?raw=true)
 
