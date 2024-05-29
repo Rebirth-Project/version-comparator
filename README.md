@@ -7,7 +7,7 @@ Version Comparator is an ultra-micro library written in java that lets you compa
 
 ## Requirements
 - Minimum Java version: 8
-- Minimum Android version: 8.0 minSdkVersion 26
+- Minimum Android version: 5.0 minSdkVersion 21
 
 ## Main features
 
@@ -31,7 +31,7 @@ Version Comparator is an ultra-micro library written in java that lets you compa
 
 ```
 dependencies {
-    implementation "it.rebirthproject:version-comparator:1.0.0"
+    implementation "it.rebirthproject:version-comparator:1.0.1"
 }
 ```
 ##### Maven:
@@ -40,7 +40,7 @@ dependencies {
 <dependency>
     <groupId>it.rebirthproject</groupId>
     <artifactId>version-comparator</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -79,9 +79,9 @@ VersionComparator vc = new VersionComparatorBuilder().useStrictSemanticVersionPa
 
 //use the version comparator
 try {     
-    int comp1=vc.compareVersions("1.0.0-FINAL", "1.0.0-RC");
-    int comp2=vc.compareVersions("1.0.0", "1.0.1");
-    int comp3=vc.compareVersions("1.0.0-FINAL+build2024", "1.0.0-RC+build2023");
+    int comp1=vc.compare("1.0.0-FINAL", "1.0.0-RC");
+    int comp2=vc.compare("1.0.0", "1.0.1");
+    int comp3=vc.compare("1.0.0-FINAL+build2024", "1.0.0-RC+build2023");
 } catch (IllegalArgumentException ex) {
     //Do something here in case of exception
 }
