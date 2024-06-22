@@ -20,6 +20,7 @@ package it.rebirthproject.versioncomparator.parser;
  */
 public enum VersionMatchingParserType {
     MINIMAL_LENGTH_VERSION,
+    MAVEN_SPECS_VERSION,
     RELAXED_SEMANTIC_VERSION,
     STRICT_SEMANTIC_VERSION_STANDARD;
 }
