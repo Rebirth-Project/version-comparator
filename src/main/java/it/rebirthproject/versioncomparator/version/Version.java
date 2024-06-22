@@ -15,6 +15,8 @@
  */
 package it.rebirthproject.versioncomparator.version;
 
+import java.util.List;
+
 /**
  * The internal representatio of a version.
  */
@@ -40,6 +42,15 @@ public class Version {
      * The version's build metadata
      */
     private final String buildMetadata;
+    /**
+     * a boolean that states if the version is tokenized or not
+     */
+    private boolean isTokenized = false;
+
+    /**
+     * a tokenized list representing the version for Maven comparator
+     */
+    private List<String> tokenList = null;
 
     /**
      * The semantic version's contructor.
@@ -82,6 +93,17 @@ public class Version {
     }
 
     /**
+     * The Maven version's contructor.
+     *
+     *
+     */
+    public Version(List<String> tokenList) {
+        this(-1, -1, -1, "", "");
+        this.isTokenized = true;
+        this.tokenList = tokenList;
+    }
+
+    /**
      *
      * @return the major version number.
      */
@@ -113,11 +135,27 @@ public class Version {
         return qualifier;
     }
 
-     /**
-     * 
+    /**
+     *
      * @return the version string build metadata.
      */
     public String getBuildMetadata() {
         return buildMetadata;
+    }
+
+    /**
+     *
+     * @return a boolean that states if the version is tokenized or not.
+     */
+    public boolean isIsTokenized() {
+        return isTokenized;
+    }
+
+    /**
+     *
+     * @return the tokenized version.
+     */
+    public List<String> getTokenList() {
+        return tokenList;
     }
 }
