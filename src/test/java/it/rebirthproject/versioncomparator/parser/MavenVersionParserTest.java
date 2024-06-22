@@ -53,7 +53,7 @@ public class MavenVersionParserTest {
     }
     
     
-    static Stream<Arguments> versionListProvider() {
+    private static Stream<Arguments> versionListProvider() {
         return Stream.of(
                 Arguments.of("0", new Version(Arrays.asList("0"))),
                 Arguments.of("1.-cep-.200-foo2.0_zap", new Version(Arrays.asList("1", "-", "cep", ".", "200", "-", "foo", "-", "2", "-", "zap")))
