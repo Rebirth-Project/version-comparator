@@ -36,8 +36,8 @@ public class MavenVersionPaddingTest {
 
     static Stream<Arguments> versionListProvider() {
         return Stream.of(
-                Arguments.of(Arrays.asList("1", "-", "ceppa", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("1", ".", "2", "-", "rc"), Arrays.asList("1", ".", "2", "-", "rc", "-", "0", "-", "")),
-                Arguments.of(Arrays.asList("1", "-", "ceppa", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("2"), Arrays.asList("2", "-", "", "-", "", "-", "0", "-", ""))
+                Arguments.of(Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("1", ".", "2", "-", "rc"), Arrays.asList("1", ".", "2", "-", "rc", "-", "0", "-", "")),
+                Arguments.of(Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("2"), Arrays.asList("2", "-", "", "-", "", "-", "0", "-", ""))
         );
     }
 }
