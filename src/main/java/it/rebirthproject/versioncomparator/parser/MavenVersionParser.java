@@ -44,7 +44,7 @@ public class MavenVersionParser implements VersionParser {
             throw new IllegalArgumentException("Invalid Maven version string format: starts with 0 \"" + version + "\"");
         }
 
-        //Basically the _ is equivalent to - to maven specifications to we remove it for simplicity
+        //Basically the _ is equivalent to - to maven specifications so we replace it for simplicity
         String replacedVersion = version.replace(MavenConstants.REPLACEBLE_SEPARATOR, MavenConstants.HYPHEN_SEPARATOR);
 
         for (int i = 0; i < replacedVersion.length(); i++) {
