@@ -26,13 +26,12 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class MavenVersionParserTest {
-    
+
     private final MavenVersionParser parser = new MavenVersionParser();
-    
 
     @ParameterizedTest
     @MethodSource("versionListProvider")
-    public void validVersionTest(String version1, Version expectedComparisonResult) {       
+    public void validVersionTest(String version1, Version expectedComparisonResult) {
         Version actualVersionResult = parser.parseVersion(version1);
         assertEquals(expectedComparisonResult.getTokenList(), actualVersionResult.getTokenList());
     }
@@ -42,20 +41,25 @@ public class MavenVersionParserTest {
         "a",
         "1.02",
         "001",
-        "1&-ok"
+        "1&-ok",
+        "1-beta.09"
     })
     public void invalidVersionsTest(String invalidVersion) {
-
         assertThrows(IllegalArgumentException.class, () -> {
             parser.parseVersion(invalidVersion);
         });
     }
-    
-    
+
     private static Stream<Arguments> versionListProvider() {
         return Stream.of(
                 Arguments.of("0", new Version(Arrays.asList("0"))),
-                Arguments.of("1.-cep-.200-foo2.0_zap", new Version(Arrays.asList("1", "-", "cep", ".", "200", "-", "foo", "-", "2", "-", "zap")))
+                Arguments.of("1.-cep-.200-foo2.0_zap", new Version(Arrays.asList("1", "-", "cep", ".", "200", "-", "foo", "-", "2", "-", "zap"))),
+                Arguments.of("1.0.0", new Version(Arrays.asList("1"))),
+                Arguments.of("1.0.2", new Version(Arrays.asList("1",".","2"))),
+                Arguments.of("1.5.2-final", new Version(Arrays.asList("1",".","5",".","2"))),
+                Arguments.of("1.5.2-ga", new Version(Arrays.asList("1",".","5",".","2"))),
+                Arguments.of("1.5.2-.--top", new Version(Arrays.asList("1",".","5",".","2","-","top"))),
+                Arguments.of("1.-din.0-dan-.5", new Version(Arrays.asList("1","-","din","-","dan",".","5")))
         );
     }
 }
