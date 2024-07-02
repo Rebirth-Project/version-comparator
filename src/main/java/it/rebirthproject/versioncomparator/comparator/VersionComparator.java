@@ -15,45 +15,13 @@
  */
 package it.rebirthproject.versioncomparator.comparator;
 
-import it.rebirthproject.versioncomparator.parser.RelaxedSemanticVersionParser;
 import it.rebirthproject.versioncomparator.version.Version;
-import it.rebirthproject.versioncomparator.version.VersionReleaseTypes;
-import it.rebirthproject.versioncomparator.parser.VersionParser;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Optional;
 
 /**
  * This class is used to compare two versions in String format.
  */
-final public class VersionComparator implements Comparator<String> {
-
-    /**
-     * The version parser used to match a string formatted version.
-     */
-    private final VersionParser versionParser;
-
-    /**
-     * A boolean variable that forces an unique version release type qualifier
-     * {@link VersionReleaseTypes} inside the string formatted version. If true
-     * then the version qualifier can contain only one of release type string.
-     * For example "RC" or "SNAPSHOT", or none of them.
-     */
-    private boolean releaseTypeUniqueInQualifier = false;
-
-    /**
-     * The version comparator private contructor. The
-     * {@link VersionComparatorBuilder} is used to build the comparator.
-     *
-     * @param versionParser The version parser chosen to check if a String
-     * formatted version matches the rules.
-     */
-    VersionComparator(VersionParser versionParser) {
-        this.versionParser = versionParser;
-        if (versionParser instanceof RelaxedSemanticVersionParser) {
-            this.releaseTypeUniqueInQualifier = true;
-        }
-    }
+public interface VersionComparator extends Comparator<String> {
 
     /**
      * The main method used to compare two string formatted versions. It parses
@@ -72,149 +40,5 @@ final public class VersionComparator implements Comparator<String> {
      * equal (0), or lesser (-1) than the second version.
      */
     @Override
-    public int compare(String version1, String version2) throws IllegalArgumentException {
-        Version firstVersion = versionParser.parseVersion(version1);
-        Version secondVersion = versionParser.parseVersion(version2);
-
-        int numberComparison = compareNumbers(firstVersion, secondVersion);
-        if (numberComparison != 0) {
-            return numberComparison;
-        } else {
-            int qualifierComparison = compareQualifiers(firstVersion.getQualifier(), secondVersion.getQualifier());
-            if (qualifierComparison != 0) {
-                return qualifierComparison;
-            } else {
-                return compareBuildMetadata(firstVersion.getBuildMetadata(), secondVersion.getBuildMetadata());
-            }
-        }
-    }
-
-    /**
-     * This method takes two {@link Version} formatted versions and compares the
-     * number parts of them.
-     *
-     * @param firstVersion The first version to compare.
-     * @param secondVersion The second version to compare.
-     *
-     * @return An integer indicating whether the first version's number part is
-     * greater (1), equal (0), or lesser (-1) than the second version's number
-     * part.
-     */
-    private int compareNumbers(Version firstVersion, Version secondVersion) {
-        if (firstVersion.getMajor() != secondVersion.getMajor()) {
-            return Long.compare(firstVersion.getMajor(), secondVersion.getMajor());
-        }
-
-        if (firstVersion.getMinor() != secondVersion.getMinor()) {
-            return Long.compare(firstVersion.getMinor(), secondVersion.getMinor());
-        }
-
-        if (firstVersion.getPatch() != secondVersion.getPatch()) {
-            return Long.compare(firstVersion.getPatch(), secondVersion.getPatch());
-        }
-
-        return 0;
-    }
-
-    /**
-     * This method takes two String formatted version's qualifiers and compares
-     * them.
-     *
-     * @param firstVersionQualifier The first version's qualifier to compare.
-     * @param secondVersionQualifier The second version's qualifier to compare.
-     *
-     * @return An integer indicating whether the first version's qualifier is
-     * greater (1), equal (0), or lesser (-1) than the second version's
-     * qualifier.
-     */
-    private int compareQualifiers(String firstVersionQualifier, String secondVersionQualifier) {
-        if (firstVersionQualifier == null && secondVersionQualifier == null) {
-            return 0;
-        }
-
-        if (firstVersionQualifier == null) {
-            return isStableOrFinal(secondVersionQualifier) ? -1 : 1;
-        }
-
-        if (secondVersionQualifier == null) {
-            return isStableOrFinal(firstVersionQualifier) ? 1 : -1;
-        }
-
-        if (releaseTypeUniqueInQualifier) {
-            return compareReleaseTypesInQualifier(firstVersionQualifier, secondVersionQualifier);
-        } else {
-            return firstVersionQualifier.compareToIgnoreCase(secondVersionQualifier);
-        }
-    }
-
-    /**
-     * This method takes two String formatted version's build metadata and
-     * compares them in a lexical way.
-     *
-     * @param firstVersionBuildMetadata The first version's build metadata to
-     * compare.
-     * @param secondVersionBuildMetadata The second version's build metadata to
-     * compare.
-     *
-     * @return An integer indicating whether the first version's build metadata
-     * is greater (1), equal (0), or lesser (-1) than the second version's build
-     * metadata.
-     */
-    private int compareBuildMetadata(String firstVersionBuildMetadata, String secondVersionBuildMetadata) {
-        if (firstVersionBuildMetadata == null && secondVersionBuildMetadata == null) {
-            return 0;
-        }
-
-        if (firstVersionBuildMetadata == null) {
-            return isStableOrFinal(secondVersionBuildMetadata) ? -1 : 1;
-        }
-
-        if (secondVersionBuildMetadata == null) {
-            return isStableOrFinal(firstVersionBuildMetadata) ? 1 : -1;
-        }
-
-        return firstVersionBuildMetadata.compareToIgnoreCase(secondVersionBuildMetadata);
-    }
-
-    /**
-     * This method compares two version qualifiers in string format.
-     *
-     * @param firstVersionQualifier The first version's qualifier to compare.
-     * @param secondVersionQualifier The second version's qualifier to compare.
-     *
-     * @return An integer indicating whether the first version's qualifier is
-     * greater (1), equal (0), or lesser (-1) than the second version's
-     * qualifier.
-     */
-    private int compareReleaseTypesInQualifier(String firstVersionQualifier, String secondVersionQualifier) {
-        String[] arrayValues = VersionReleaseTypes.getValues();
-        Optional<String> optionalStringReleaseTypeFirstVersion = Arrays.stream(arrayValues).filter(s -> s.equals(firstVersionQualifier)).findFirst();
-        Optional<String> optionalStringReleaseTypeSecondVersion = Arrays.stream(arrayValues).filter(s -> s.equals(secondVersionQualifier)).findFirst();
-
-        if (!optionalStringReleaseTypeFirstVersion.isPresent()) {
-            return isStableOrFinal(secondVersionQualifier) ? 1 : -1;
-        } else if (!optionalStringReleaseTypeSecondVersion.isPresent()) {
-            return isStableOrFinal(firstVersionQualifier) ? 1 : -1;
-        } else {
-            int priorityReleaseTypeFirstVersion = VersionReleaseTypes.getValueOfReleaseTypes(optionalStringReleaseTypeFirstVersion.get()).getPriority();
-            int priorityReleaseTypeSecondVersion = VersionReleaseTypes.getValueOfReleaseTypes(optionalStringReleaseTypeSecondVersion.get()).getPriority();
-
-            return Integer.compare(priorityReleaseTypeFirstVersion, priorityReleaseTypeSecondVersion);
-        }
-    }
-
-    /**
-     * This method checks if a unique qualifier is of type
-     * {VersionReleaseTypes.STABLE} or {VersionReleaseTypes.FINAL}
-     *
-     * @param qualifierType The qualifier's string to check.
-     *
-     * @return A boolean value that is true if the qualifier contains the type
-     * {VersionReleaseTypes.STABLE} or {VersionReleaseTypes.FINAL}, and false
-     * otherwise.
-     */
-    private boolean isStableOrFinal(String qualifierType) {
-        String qualifierTypeUpper = qualifierType.toUpperCase();
-        return qualifierTypeUpper.contains(VersionReleaseTypes.STABLE.getValue()) || qualifierTypeUpper.contains(VersionReleaseTypes.FINAL.getValue());
-    }
+    public int compare(String version1, String version2) throws IllegalArgumentException;
 }

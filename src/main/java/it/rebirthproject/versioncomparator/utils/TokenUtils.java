@@ -16,10 +16,11 @@
 package it.rebirthproject.versioncomparator.utils;
 
 import it.rebirthproject.versioncomparator.version.MavenConstants;
+import it.rebirthproject.versioncomparator.version.VersionReleaseTypes;
 
 public class TokenUtils {    
 
-    public static boolean isRealSeparator(char c) {
+    public static boolean isSeparator(char c) {
         return c == MavenConstants.HYPHEN_SEPARATOR || c == MavenConstants.FULLSTOP_SEPARATOR;
     }
 
@@ -28,6 +29,6 @@ public class TokenUtils {
     }
 
     public static boolean isNullValue(String token) {
-        return token.equals(MavenConstants.ZERO) || token.equals(MavenConstants.EMPTY_STRING) || token.equals(MavenConstants.GA_STRING) || token.equals(MavenConstants.FINAL_STRING);
+        return token.equals(MavenConstants.ZERO) || token.equals(VersionReleaseTypes.EMPTY.getValue()) || token.toUpperCase().equals(VersionReleaseTypes.GA.getValue()) || token.toUpperCase().equals(VersionReleaseTypes.FINAL.getValue());
     }
 }

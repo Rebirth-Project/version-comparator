@@ -21,13 +21,22 @@ import java.util.Arrays;
  * An enum containing all known version's release types.
  */
 public enum VersionReleaseTypes {
-    SNAPSHOT("SNAPSHOT", 0),
-    PRE_ALPHA("PRE_ALPHA", 1),
-    ALPHA("ALPHA", 2),
-    BETA("BETA", 3),
-    RC("RC", 4),
-    STABLE("STABLE", 5),
-    FINAL("FINAL", 5);
+    SNAPSHOT("SNAPSHOT", 0, 4),
+    PRE_ALPHA("PRE_ALPHA", 1, 0),
+    ALPHA("ALPHA", 2, 0),
+    A("A", 2, 0),
+    BETA("BETA", 3, 1),
+    B("BETA", 3, 1),
+    MILESTONE("MILESTONE", 4, 2),
+    M("M", 4, 2),
+    CR("CR", 5, 3),
+    RC("RC", 5, 3),
+    EMPTY("", 8, 5),
+    STABLE("STABLE", 6, 6),
+    FINAL("FINAL", 7, 6),
+    GA("GA", 7, 6),
+    RELEASE("RELEASE", 7, 6),
+    SP("SP", 7, 7);
 
     /**
      * The String value representing the version release type
@@ -35,41 +44,57 @@ public enum VersionReleaseTypes {
     private final String value;
 
     /**
-     * An integer that represents the priority of a release type.
-     * Higher priority means an higher Version.
+     * An integer that represents the priority of a release type. Higher
+     * priority means an higher Version.
      */
-    private final int priority;
+    private final int semanticPriority;
+
+    /**
+     * An integer that represents the priority of a release type. Higher
+     * priority means an higher Version.
+     */
+    private final int mavenPriority;
 
     /**
      * The {@link VersionReleaseTypes}'s contructor.
-     * 
+     *
      * @param value The string value of the type.
      * @param priority the priority of the type.
      */
-    private VersionReleaseTypes(String value, int priority) {
+    private VersionReleaseTypes(String value, int semanticPriority, int mavenPriority) {
         this.value = value;
-        this.priority = priority;
-    }
-    
-    /**
-     * 
-     * @return the priority of the type.
-     */
-    public int getPriority() {
-        return priority;
+        this.semanticPriority = semanticPriority;
+        this.mavenPriority = mavenPriority;
     }
 
     /**
-     * 
-     * @return  the string value of the type.
+     *
+     * @return the semantic priority of the type.
+     */
+    public int getSemanticPriority() {
+        return semanticPriority;
+    }
+
+    /**
+     *
+     * @return the maven priority of the type.
+     */
+    public int getMavenPriority() {
+        return mavenPriority;
+    }
+
+    /**
+     *
+     * @return the string value of the type.
      */
     public String getValue() {
         return value;
     }
 
     /**
-     * Creates the VersionReleaseTypes enum type given the string representation.
-     * 
+     * Creates the VersionReleaseTypes enum type given the string
+     * representation.
+     *
      * @param value the string value of the type.
      * @return The enum type given the string value.
      */
@@ -85,7 +110,7 @@ public enum VersionReleaseTypes {
 
     /**
      * This method returns a stering array with all the types.
-     * 
+     *
      * @return all the types in an string array format.
      */
     public static String[] getValues() {
@@ -93,8 +118,9 @@ public enum VersionReleaseTypes {
     }
 
     /**
-     * This method creates a regex used to check the release type uniqueness if present.
-     * 
+     * This method creates a regex used to check the release type uniqueness if
+     * present.
+     *
      * @return the complete regex in string format.
      */
     public static String getRegexToCheckReleaseTypeUniqueness() {

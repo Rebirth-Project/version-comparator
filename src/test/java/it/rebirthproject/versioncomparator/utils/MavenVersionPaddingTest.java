@@ -15,6 +15,7 @@
  */
 package it.rebirthproject.versioncomparator.utils;
 
+import it.rebirthproject.versioncomparator.version.PaddedLists;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -27,16 +28,18 @@ public class MavenVersionPaddingTest {
 
     @ParameterizedTest
     @MethodSource("versionListProvider")
-    public void compareTest(List<String> version1, List<String> version2, List<String> expectedOutput) {
-        MavenVersionPadder xx = new MavenVersionPadder();
-        List<String> result = xx.padShorterVersion(version1, version2);
-        assertEquals(expectedOutput, result);
+    public void compareTest(List<String> version1, List<String> version2, PaddedLists expectedOutput) {
+        MavenVersionPadder mavenVersionPadder = new MavenVersionPadder();
+        PaddedLists result = mavenVersionPadder.padShorterVersion(version1, version2);
+        assertEquals(expectedOutput.getVersion1(), result.getVersion1());
+        assertEquals(expectedOutput.getVersion2(), result.getVersion2());
     }
 
     private static Stream<Arguments> versionListProvider() {
         return Stream.of(
-                Arguments.of(Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("1", ".", "2", "-", "rc"), Arrays.asList("1", ".", "2", "-", "rc", "-", "0", "-", "")),
-                Arguments.of(Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("2"), Arrays.asList("2", "-", "", "-", "", "-", "0", "-", ""))
+                Arguments.of(Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("1", ".", "2", "-", "rc"), new PaddedLists(Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("1", ".", "2", "-", "rc", "-", "0", "-", ""))),
+                Arguments.of(Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("2"), new PaddedLists(Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap"), Arrays.asList("2", "-", "", "-", "", "-", "0", "-", ""))),
+                Arguments.of(Arrays.asList("2"), Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap"), new PaddedLists(Arrays.asList("2", "-", "", "-", "", "-", "0", "-", ""), Arrays.asList("1", "-", "cep", "-", "foo", "-", "2", "-", "zap")))
         );
     }
 }

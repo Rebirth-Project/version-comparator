@@ -16,12 +16,13 @@
 package it.rebirthproject.versioncomparator.utils;
 
 import it.rebirthproject.versioncomparator.version.MavenConstants;
+import it.rebirthproject.versioncomparator.version.PaddedLists;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MavenVersionPadder {
 
-    public List<String> padShorterVersion(List<String> version1, List<String> version2) {
+    public PaddedLists padShorterVersion(List<String> version1, List<String> version2) {
         List<String> shorterList = version1.size() < version2.size() ? version1 : version2;
         List<String> longerList = shorterList == version1 ? version2 : version1;
         int numElementsToPad = longerList.size() - shorterList.size();
@@ -31,12 +32,17 @@ public class MavenVersionPadder {
             paddedList.add(determinePadValue(longerList.get(shorterList.size() + i)));
         }
 
-        return paddedList;
+        //We want the input lists order to be the same in the output
+        if (version1 == shorterList) {
+            return new PaddedLists(paddedList, longerList);
+        } else {
+            return new PaddedLists(longerList, paddedList);
+        }
     }
 
     private String determinePadValue(String otherToken) {
         char firstChar = otherToken.charAt(0);
-        if (TokenUtils.isRealSeparator(firstChar)) {
+        if (TokenUtils.isSeparator(firstChar)) {
             return "" + firstChar;
         } else if (Character.isDigit(firstChar)) {
             return MavenConstants.ZERO;

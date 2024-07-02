@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class VersionComparatorTest {
+public class StandardVersionComparatorTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -34,7 +34,7 @@ public class VersionComparatorTest {
         "1.0.0, 1.2.0, -1"                
     })
     public void compareMinimalVersionTest(String version1, String version2, int expectedComparisonResult) {
-        int actualComparisonResult = new VersionComparator(new MinimalVersionParser()).compare(version1, version2);
+        int actualComparisonResult = new StandardVersionComparator(new MinimalVersionParser()).compare(version1, version2);
         assertEquals(expectedComparisonResult, actualComparisonResult);
     }
     
@@ -59,7 +59,7 @@ public class VersionComparatorTest {
         "111.27.0, 111.27.0FINal-TTT, -1"    
     })
     public void compareRelaxedSemanticVersionTest(String version1, String version2, int expectedComparisonResult) {
-        int actualComparisonResult = new VersionComparator(new RelaxedSemanticVersionParser()).compare(version1, version2);
+        int actualComparisonResult = new StandardVersionComparator(new RelaxedSemanticVersionParser()).compare(version1, version2);
         assertEquals(expectedComparisonResult, actualComparisonResult);
     }
     
@@ -83,7 +83,7 @@ public class VersionComparatorTest {
         "111.27.0, 111.27.0-FINal-TTT, -1"    
     })
     public void compareStrictSemanticVersionTest(String version1, String version2, int expectedComparisonResult) {
-        int actualComparisonResult = new VersionComparator(new StrictSemanticVersionParser()).compare(version1, version2);
+        int actualComparisonResult = new StandardVersionComparator(new StrictSemanticVersionParser()).compare(version1, version2);
         assertEquals(expectedComparisonResult, actualComparisonResult);
     }
 }

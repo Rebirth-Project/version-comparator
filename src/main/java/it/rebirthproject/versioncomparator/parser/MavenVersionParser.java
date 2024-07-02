@@ -39,7 +39,7 @@ public class MavenVersionParser implements VersionParser {
         if (!previousCharType.equals(MavenCharType.DIGIT)) {
             throw new IllegalArgumentException("Invalid Maven version string format: does not start with a number \"" + version + "\"");
         }
-        if (c.equals('0') && version.length()> 1) {
+        if (c.equals('0') && version.length() > 1) {
             throw new IllegalArgumentException("Invalid Maven version string format: starts with 0 \"" + version + "\"");
         }
 
@@ -80,7 +80,7 @@ public class MavenVersionParser implements VersionParser {
         } else if (Character.isLetter(c)) {
             return MavenCharType.LETTER;
         } else {
-            if (TokenUtils.isRealSeparator(c)) {
+            if (TokenUtils.isSeparator(c)) {
                 return MavenCharType.SEPARATOR;
             } else {
                 throw new IllegalArgumentException("Invalid Maven version string format: version contains unacceptable characters. \"" + c + "\"");
@@ -97,15 +97,19 @@ public class MavenVersionParser implements VersionParser {
     }
 
     private void trimNullValues(List<String> tokens) {
-        //The first token is always a number and even if 0 we must leave it because 0 is a valid version.
+        //Maven Rules state:
+        //Then, starting from the end of the version, the trailing "null" values (0, "", "final", "ga") are trimmed. This process is repeated at each remaining hyphen from end to start.
+        boolean shouldTrim = true;
         for (int i = tokens.size() - 1; i > 0; i--) {
-            if (TokenUtils.isNullValue(tokens.get(i))) {
-                //We remove the value and also the previous separator
+            String token = tokens.get(i);
+            if (shouldTrim && TokenUtils.isNullValue(token)) {
                 tokens.remove(i);
                 if (i > 0) {
                     i--;
                     tokens.remove(i);
                 }
+            } else {
+                shouldTrim = token.equals("-");
             }
         }
     }

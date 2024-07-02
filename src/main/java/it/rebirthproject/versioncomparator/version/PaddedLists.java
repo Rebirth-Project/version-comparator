@@ -15,12 +15,23 @@
  */
 package it.rebirthproject.versioncomparator.version;
 
-public class MavenConstants {
+import java.util.List;
 
-    public static final String IS_NUMBER_REGEX = "^\\d+$";
+public class PaddedLists {
 
-    public static final Character REPLACEBLE_SEPARATOR = '_';
-    public static final Character HYPHEN_SEPARATOR = '-';
-    public static final Character FULLSTOP_SEPARATOR = '.';
-    public static final String ZERO = "0";
+    private final List<String> version1;
+    private final List<String> version2;
+
+    public PaddedLists(List<String> version1, List<String> version2) {
+        this.version1 = version1;
+        this.version2 = version2;
+    }
+
+    public List<String> getVersion1() {
+        return version1;
+    }
+
+    public List<String> getVersion2() {
+        return version2;
+    }
 }

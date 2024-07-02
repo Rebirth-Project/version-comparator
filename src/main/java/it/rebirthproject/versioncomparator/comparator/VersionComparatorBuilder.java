@@ -15,26 +15,30 @@
  */
 package it.rebirthproject.versioncomparator.comparator;
 
+import it.rebirthproject.versioncomparator.parser.MavenVersionParser;
 import it.rebirthproject.versioncomparator.parser.MinimalVersionParser;
 import it.rebirthproject.versioncomparator.parser.RelaxedSemanticVersionParser;
 import it.rebirthproject.versioncomparator.parser.StrictSemanticVersionParser;
 import it.rebirthproject.versioncomparator.parser.VersionMatchingParserType;
 import static it.rebirthproject.versioncomparator.parser.VersionMatchingParserType.MINIMAL_LENGTH_VERSION;
-import it.rebirthproject.versioncomparator.parser.VersionParser;
+import static it.rebirthproject.versioncomparator.parser.VersionMatchingParserType.STRICT_SEMANTIC_VERSION_STANDARD;
+import it.rebirthproject.versioncomparator.utils.MavenVersionPadder;
 
 /**
- * A builder which can be used to create an {@link VersionComparator}
+ * A builder which can be used to create an {@link StandardVersionComparator}
  */
 public class VersionComparatorBuilder {
 
     /**
-     * The type {@link VersionMatchingParserType} of parser used to check if a String 
-     * corresponds to a formal {@link  it.rebirthproject.versioncomparator.version.Version}.
+     * The type {@link VersionMatchingParserType} of parser used to check if a
+     * String corresponds to a formal
+     * {@link  it.rebirthproject.versioncomparator.version.Version}.
      */
-    private VersionMatchingParserType versionMatchingParserType=VersionMatchingParserType.RELAXED_SEMANTIC_VERSION;
- 
+    private VersionMatchingParserType versionMatchingParserType = VersionMatchingParserType.RELAXED_SEMANTIC_VERSION;
+
     /**
-     * Sets the {@link #versionMatchingParserType} attribute to minimal version parser.
+     * Sets the {@link #versionMatchingParserType} attribute to minimal version
+     * parser.
      *
      * @return The {@link VersionComparatorBuilder} instance configured with the
      * chosen minimal version parser.
@@ -43,9 +47,10 @@ public class VersionComparatorBuilder {
         this.versionMatchingParserType = VersionMatchingParserType.MINIMAL_LENGTH_VERSION;
         return this;
     }
-    
+
     /**
-     * Sets the {@link #versionMatchingParserType} attribute to strict semantic version parser.
+     * Sets the {@link #versionMatchingParserType} attribute to strict semantic
+     * version parser.
      *
      * @return The {@link VersionComparatorBuilder} instance configured with the
      * chosen strict semantic version parser.
@@ -54,33 +59,26 @@ public class VersionComparatorBuilder {
         this.versionMatchingParserType = VersionMatchingParserType.STRICT_SEMANTIC_VERSION_STANDARD;
         return this;
     }
-    
-     /**
-     * Builds a {@link VersionComparator} configured by {@link VersionComparatorBuilder}'s
-     * properties eventually set or with pre-configured default values
+
+    /**
+     * Builds a {@link StandardVersionComparator} configured by
+     * {@link VersionComparatorBuilder}'s properties eventually set or with
+     * pre-configured default values
      *
-     * @return an {@link VersionComparator} instance
+     * @return an {@link StandardVersionComparator} instance
      *
      */
     public VersionComparator build() {
-        return new VersionComparator(createParser());
-    }
-
-     /**
-     * Builds a {@link VersionParser} configured by {@link VersionComparatorBuilder}'s
-     * properties eventually set or with pre-configured default values
-     *
-     * @return an {@link VersionParser} instance
-     *
-     */
-    private VersionParser createParser() {
         switch (versionMatchingParserType) {
             case MINIMAL_LENGTH_VERSION:
-                return new MinimalVersionParser();            
+                return new StandardVersionComparator(new MinimalVersionParser());
             case STRICT_SEMANTIC_VERSION_STANDARD:
-                return new StrictSemanticVersionParser();
+                return new StandardVersionComparator(new StrictSemanticVersionParser());
+            case MAVEN_SPECS_VERSION:
+                //TODO here we need 2 parsers since first of all we should check if it is compliant with relaxed parser specs (mostly semantic version 1.0.0)
+                return new MavenVersionComparator(new MavenVersionParser(), new MavenVersionPadder());
             default:
-                return new RelaxedSemanticVersionParser();
+                return new StandardVersionComparator(new RelaxedSemanticVersionParser());
         }
     }
 }
