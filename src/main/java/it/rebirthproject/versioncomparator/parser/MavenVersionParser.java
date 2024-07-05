@@ -98,9 +98,9 @@ public class MavenVersionParser implements VersionParser {
     }
 
     private void replaceEmptyTokensWithZero(List<String> tokens) {
-        for (String token : tokens) {
-            if (token.isEmpty()) {
-                token = MavenConstants.ZERO;
+        for (int i = 0; i < tokens.size(); i++) {
+            if (tokens.get(i).isEmpty()) {
+                tokens.set(i, MavenConstants.ZERO);
             }
         }
     }

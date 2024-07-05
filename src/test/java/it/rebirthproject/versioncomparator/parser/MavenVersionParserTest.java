@@ -53,7 +53,7 @@ public class MavenVersionParserTest {
     private static Stream<Arguments> versionListProvider() {
         return Stream.of(
                 Arguments.of("0", new Version(Arrays.asList("0"))),
-                Arguments.of("1.-cep-.200-foo2.0_zap", new Version(Arrays.asList("1", "-", "cep", "-", "", ".", "200", "-", "foo", "-", "2", "-", "zap"))),
+                Arguments.of("1.-cep-.200-foo2.0_zap", new Version(Arrays.asList("1", "-", "cep", "-", "0", ".", "200", "-", "foo", "-", "2", "-", "zap"))),
                 Arguments.of("1.0.0", new Version(Arrays.asList("1"))),
                 Arguments.of("1.0.2", new Version(Arrays.asList("1", ".", "0", ".", "2"))),
                 Arguments.of("1.5.2-final", new Version(Arrays.asList("1", ".", "5", ".", "2"))),
@@ -63,7 +63,7 @@ public class MavenVersionParserTest {
                 Arguments.of("1-sp-1", new Version(Arrays.asList("1", "-", "sp", "-", "1"))),
                 Arguments.of("1-ga.1", new Version(Arrays.asList("1", "-", "ga", ".", "1"))),
                 Arguments.of("1-ga-1", new Version(Arrays.asList("1", "-", "1"))),
-                Arguments.of("1-1.foo-bar1baz-.1", new Version(Arrays.asList("1", "-", "1", ".", "foo", "-", "bar", "-", "1", "-", "baz", "-", "", ".", "1"))),
+                Arguments.of("1-1.foo-bar1baz-.1", new Version(Arrays.asList("1", "-", "1", ".", "foo", "-", "bar", "-", "1", "-", "baz", "-", "0", ".", "1"))),
                 Arguments.of("1-pro-1", new Version(Arrays.asList("1", "-", "pro", "-", "1"))),
                 Arguments.of("1-0.1", new Version(Arrays.asList("1", "-", "0", ".", "1"))),
                 Arguments.of("1-0-1", new Version(Arrays.asList("1", "-", "1"))),
