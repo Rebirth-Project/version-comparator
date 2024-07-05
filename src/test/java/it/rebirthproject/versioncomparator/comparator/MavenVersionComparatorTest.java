@@ -88,7 +88,7 @@ public class MavenVersionComparatorTest {
         "5-SNAPSHOT, 5, -1",
         "5, 5, 0",
         "5, 6,-1",
-        "6, 5, 1", 
+        "6, 5, 1",
         "1.2, 1.0, 1",
         "1.2-SNAPSHOT, 1.0, 1",
         "1.2, 1.0-SNAPSHOT, 1",
@@ -142,7 +142,9 @@ public class MavenVersionComparatorTest {
         "1.0.10-1, 1.0.1-0, 1",
         "1.0.10-2, 1.0.10-1, 1",
         "1.0.9-3, 1.0.10-2, -1",
-        "1.0.9-3, 1.0.1-0, 1"        
+        "1.0.9-3, 1.0.1-0, 1",
+        "3.3.0-I20070605-10, 3.3.0, 1",
+        "3.3.0, 3.3.0-I20070605-10, -1"
     })
     public void compareMavenVersionOtherExamples(String version1, String version2, int expectedComparisonResult) {
         int actualComparisonResult = mavenVersionComparator.compare(version1, version2);
