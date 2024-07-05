@@ -44,15 +44,7 @@ final public class MavenVersionComparator implements VersionComparator {
         List<String> secondVersionTokenList = paddedLists.getVersion2();
 
         int size = firstVersionTokenList.size();
-
-        for (int i = 0; i < size; i++) {
-            System.out.print(firstVersionTokenList.get(i)+",");
-        }
-        System.out.println("");
-        for (int i = 0; i < size; i++) {
-            System.out.print(secondVersionTokenList.get(i)+",");
-        }
-
+       
         String token1 = firstVersionTokenList.get(0);
         String token2 = secondVersionTokenList.get(0);
 
