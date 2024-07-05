@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+// Based on examples provided by https://maven.apache.org/pom.html#Version_Order_Specification
+// Based on examples provided by https://docs.oracle.com/middleware/1212/core/MAVEN/maven_version.htm#MAVEN400
 public class MavenVersionComparatorTest {
 
     private static final MavenVersionComparator mavenVersionComparator = new MavenVersionComparator(new MavenVersionParser(), new MavenVersionPadder());
