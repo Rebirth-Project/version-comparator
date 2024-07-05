@@ -39,7 +39,7 @@ public class MavenVersionParser implements VersionParser {
         if (!previousCharType.equals(MavenCharType.DIGIT)) {
             throw new IllegalArgumentException("Invalid Maven version string format: does not start with a number \"" + version + "\"");
         }
-        if (c.equals('0') && version.length() > 1) {
+        if (c.equals('0') && TokenUtils.isNumber(version) && version.length() > 1) {
             throw new IllegalArgumentException("Invalid Maven version string format: starts with 0 \"" + version + "\"");
         }
 
@@ -69,6 +69,7 @@ public class MavenVersionParser implements VersionParser {
         tokenList.add(token.toString());
 
         checkForInvalidNumericTokens(version, tokenList);
+        replaceEmptyTokensWithZero(tokenList);
         trimNullValues(tokenList);
 
         return new Version(tokenList);
@@ -92,6 +93,14 @@ public class MavenVersionParser implements VersionParser {
         for (String token : tokens) {
             if (TokenUtils.isNumber(token) && token.length() > 1 && token.startsWith("0")) {
                 throw new IllegalArgumentException("Invalid Maven version string format: numbers starting with 0 are not allowed \"" + version + "\"");
+            }
+        }
+    }
+
+    private void replaceEmptyTokensWithZero(List<String> tokens) {
+        for (String token : tokens) {
+            if (token.isEmpty()) {
+                token = MavenConstants.ZERO;
             }
         }
     }

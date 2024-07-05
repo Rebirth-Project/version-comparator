@@ -24,28 +24,128 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 public class MavenVersionComparatorTest {
 
-    //TODO add more complex cases
+    private static final MavenVersionComparator mavenVersionComparator = new MavenVersionComparator(new MavenVersionParser(), new MavenVersionPadder());
+
+    @ParameterizedTest
+    @CsvSource({
+        "1.0-aaa, 1.0-aab, -1",
+        "1.0-aab, 1.0-aaa, 1",
+        "1.0-alpha, 1.0-aaa, -1",
+        "1.0-aaa, 1.0-alpha, 1",
+        "1.0.alpha, 1.0-aaa, 1",
+        "1.0-aaa, 1.0.alpha, -1",
+        "1.0-alpha, 1.0.aaa, -1",
+        "1.0.aaa, 1.0-alpha, 1",
+        "1.0, 1.0.aaa, -1",
+        "1.0.aaa, 1.0, 1"
+    })
+
+    public void comapreQualifierOrder(String version1, String version2, int expectedComparisonResult) {
+        int actualComparisonResult = mavenVersionComparator.compare(version1, version2);
+        assertEquals(expectedComparisonResult, actualComparisonResult);
+    }
+
     @ParameterizedTest
     @CsvSource({
         "1, 1.1, -1",
+        "1-1, 1.1, -1",
         "1-snapshot, 1, -1",
         "1-snapshot, 1-sp, -1",
-        "1-foo2, 1-foo10, -1",        
+        "1-foo2, 1-foo10, -1",
         "1.foo, 1-foo, 0",
         "1.foo, 1-1, -1",
         "1.foo, 1.1, -1",
+        "1.0-rc, 1.0-cr,0",
+        "1.0-cr, 1.0-rc,0",
         "1.ga, 1-ga, 0",
+        "1-ga, 1.ga, 0",
         "1.ga, 1-0, 0",
         "1.0, 1-0, 0",
         "1.0, 1, 0",
-        "1-0, 1, 0",        
+        "1-0, 1, 0",
+        "1, 1-sp, -1",
         "1-sp, 1-ga, 1",
-        "1-sp.1, 1-ga.1, 1",        
+        "1-sp.1, 1-ga.1, 1",
         "1-sp-1, 1-ga-1, -1",
-        "1-a1, 1-alpha-1, 0"        
+        "1.0-sp, 1.0-ga, 1",
+        "1.0-sp.1, 1.0-ga.1, 1",
+        "1-a1, 1-alpha-1, 0",
+        "1-alpha-1, 1-a1, 0",
+        "1-1, 1-ga-1, 0",
+        "1-final, 1, 0",
+        "1, 1-final, 0",
+        "1-1.foo-bar1baz-.1, 1-1.foo-bar-1-baz-0.1, -1",
+        "1-1.foo-bar-1-baz-0.1, 1-1.foo-bar1baz-.1, 1"
     })
-    public void compareStrictSemanticVersionTest(String version1, String version2, int expectedComparisonResult) {
-        int actualComparisonResult = new MavenVersionComparator(new MavenVersionParser(), new MavenVersionPadder()).compare(version1, version2);
+    public void compareMavenVersionDocumentationExamples(String version1, String version2, int expectedComparisonResult) {
+        int actualComparisonResult = mavenVersionComparator.compare(version1, version2);
+        assertEquals(expectedComparisonResult, actualComparisonResult);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "5, 5-SNAPSHOT, 1",
+        "5-SNAPSHOT, 5, -1",
+        "5, 5, 0",
+        "5, 6,-1",
+        "6, 5, 1", 
+        "1.2, 1.0, 1",
+        "1.2-SNAPSHOT, 1.0, 1",
+        "1.2, 1.0-SNAPSHOT, 1",
+        "1.2-SNAPSHOT, 1.0-SNAPSHOT, 1",
+        "1.0, 1.2, -1",
+        "1.0-SNAPSHOT, 1.2, -1",
+        "1.0, 1.2-SNAPSHOT, -1",
+        "1.0-SNAPSHOT, 1.2-SNAPSHOT, -1",
+        "1.0, 1.0, 0",
+        "1.0-SNAPSHOT, 1.0, -1",
+        "1.0, 1.0-SNAPSHOT, 1",
+        "1.0-SNAPSHOT, 1.0-SNAPSHOT,0",
+        "1.2-12, 1.1, 1",
+        "1.2-12, 1.1-33, 1",
+        "1.2-12, 1.2-11, 1",
+        "1.1, 1.2-12, -1",
+        "1.2-11, 1.2-12, -1",
+        "1.1-33, 1.2-12, -1",
+        "1.2-alpha, 1.1, 1",
+        "1.2-alpha, 1.1-beta, 1",
+        "1.2-beta, 1.2-alpha, 1",
+        "1.1, 1.2-alpha, -1",
+        "1.2-alpha, 1.2-alpha, 0",
+        "1.1-beta, 1.2-alpha, -1",
+        "1.0.0, 0.0.9, 1",
+        "1.0.0, 0.99.9, 1",
+        "1.0.0, 0.99.9-alpha, 1",
+        "1.0.0, 0.99.9-gamma, 1",
+        "1.0.0-alpha, 0.99.9-alpha, 1",
+        "1.0.0-alpha, 0.99.9-gamma, 1",
+        "1.0.0-gamma, 0.99.9-alpha, 1",
+        "1.0.0-gamma, 0.99.9-gamma, 1",
+        "0.0.9, 1.0.9, -1",
+        "0.99.9, 1.99.9, -1",
+        "0.99.9, 1.99.9-alpha, -1",
+        "0.99.9, 1.99.9-gamma, -1",
+        "0.99.0-alpha, 1.99.9-alpha, -1",
+        "0.99.0-alpha, 1.99.9-gamma, -1",
+        "0.99.0-gamma, 1.99.9-alpha, -1",
+        "0.99.0-gamma, 1.99.9-gamma, -1",
+        "1.0.10.1, 1.0.1.0, 1",
+        "1.0.10.2, 1.0.10.1, 1",
+        "1.0.10.2, 1.0.9.3, 1",
+        "1.2-beta-2, 1.2-alpha-6, 1",
+        "1.2.3, 1.3.2, -1",
+        "0.2.3, 1.3.2, -1",
+        "1.2.3, 0.3.2, 1",
+        "1.2.3-SNAPSHOT, 1.2.3, -1",
+        "1.2.3-SNAPSHOT, 1.2.3-SNAPSHOT, 0",
+        "1.2.3, 1.2.3-SNAPSHOT, 1",
+        "1.0.10-1, 1.0.1-0, 1",
+        "1.0.10-2, 1.0.10-1, 1",
+        "1.0.9-3, 1.0.10-2, -1",
+        "1.0.9-3, 1.0.1-0, 1"        
+    })
+    public void compareMavenVersionOtherExamples(String version1, String version2, int expectedComparisonResult) {
+        int actualComparisonResult = mavenVersionComparator.compare(version1, version2);
         assertEquals(expectedComparisonResult, actualComparisonResult);
     }
 }

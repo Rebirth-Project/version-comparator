@@ -27,23 +27,31 @@ import java.util.List;
 final public class MavenVersionComparator implements VersionComparator {
 
     private final VersionParser versionParser;
-    private final MavenVersionPadder mavenVersionPadder;    
-    
-    MavenVersionComparator(VersionParser versionParser,MavenVersionPadder mavenVersionPadder) {
-        this.versionParser = versionParser;        
+    private final MavenVersionPadder mavenVersionPadder;
+
+    MavenVersionComparator(VersionParser versionParser, MavenVersionPadder mavenVersionPadder) {
+        this.versionParser = versionParser;
         this.mavenVersionPadder = mavenVersionPadder;
-    }    
+    }
 
     @Override
-    public int compare(String version1, String version2) throws IllegalArgumentException {        
+    public int compare(String version1, String version2) throws IllegalArgumentException {
         Version firstVersion = versionParser.parseVersion(version1);
-        Version secondVersion = versionParser.parseVersion(version2);                
+        Version secondVersion = versionParser.parseVersion(version2);
         PaddedLists paddedLists = mavenVersionPadder.padShorterVersion(firstVersion.getTokenList(), secondVersion.getTokenList());
-        
+
         List<String> firstVersionTokenList = paddedLists.getVersion1();
         List<String> secondVersionTokenList = paddedLists.getVersion2();
-                
+
         int size = firstVersionTokenList.size();
+
+        for (int i = 0; i < size; i++) {
+            System.out.print(firstVersionTokenList.get(i)+",");
+        }
+        System.out.println("");
+        for (int i = 0; i < size; i++) {
+            System.out.print(secondVersionTokenList.get(i)+",");
+        }
 
         String token1 = firstVersionTokenList.get(0);
         String token2 = secondVersionTokenList.get(0);
@@ -74,7 +82,7 @@ final public class MavenVersionComparator implements VersionComparator {
             }
             return 0;
         }
-    }    
+    }
 
     private int compareTokens(String token1, String token2) {
         boolean token1IsNumber = TokenUtils.isNumber(token1);
@@ -103,13 +111,13 @@ final public class MavenVersionComparator implements VersionComparator {
             return Integer.compare(qualifier1.getMavenPriority(), qualifier2.getMavenPriority());
         }
 
-        // If one is in known and the other is not, the one known comes first
+        // If one is in known and the other is not, the one known comes first (is lesser than)
         if (qualifier1 != null) {
-            return 1;
+            return -1;
         }
 
         if (qualifier2 != null) {
-            return -1;
+            return 1;
         }
 
         //If both qualifiers are unknown then compare lexicographically.
