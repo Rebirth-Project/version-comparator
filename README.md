@@ -11,7 +11,7 @@ Version Comparator is an ultra-micro library written in java that lets you compa
 
 ## Main features
 
-* Micro library (< 15k jar)
+* Micro library (~25k jar)
 * Absolutely trivial to use
 * No external dependencies 
 * The code is clean, testable, compact and very easy to understand and maintain
@@ -49,17 +49,19 @@ dependencies {
 The version comparator can compare versions provided in string format. Currently, the library checks whether a passed version conforms to the internal parser rules. It throws an exception if an invalid version is provided as input. The library in its current state of the art has three different parsers to choose from:
 
 1. a minimal parser (version format X.Y.Z)
-2. a semantic version parser ( the standard semantic version you can find here  [https://semver.org/](https://semver.org/), that basically parses this version format X.Y.Z-QUALIFIER+buildmetadata)
+2. a semantic version parser (the standard semantic version you can find here  [https://semver.org/](https://semver.org/), that basically parses this version format X.Y.Z-QUALIFIER+buildmetadata)
 3. a relaxed semantic version parser that is the default choice to build the comparator and is basically the version standard used by Maven artifacts (version format X.Y.Z-QUALIFIER where the qualifier should be a unique type string).
 The qualifier types recognized by the relaxed parser are the following and in this order of priority: 
 
  - SNAPSHOT
- -  PRE_ALPHA
- -  ALPHA
- -  BETA
- -  RC
- -  STABLE
- -  FINAL
+ - PRE_ALPHA
+ - ALPHA
+ - BETA
+ - RC
+ - STABLE
+ - FINAL
+
+4. a complete Maven's rules compliant version parser (you can find here the specs [https://maven.apache.org/pom.html#version-order-specification](https://maven.apache.org/pom.html#version-order-specification))
 
 ## Usage
 
@@ -76,6 +78,10 @@ VersionComparator vc = new VersionComparatorBuilder().useMinimalVersionParser().
 //create a semantic version comparator (https://semver.org/)
 //version to check is in this format X.Y.Z-QUALIFIER+buildmetadata
 VersionComparator vc = new VersionComparatorBuilder().useStrictSemanticVersionParser().build();
+
+//create a maven's rules version comparator (https://maven.apache.org/pom.html#version-order-specification)
+//version to check is in different formats as stated by the maven's document. For example: 1-1.foo-bar1baz-.1 
+VersionComparator vc = new VersionComparatorBuilder().useMavenRulesVersionParser().build();
 
 //use the version comparator
 try {     

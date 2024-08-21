@@ -25,9 +25,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class MavenVersionParserTest {
+public class MavenRulesVersionParserTest {
 
-    private final MavenVersionParser parser = new MavenVersionParser();
+    private final MavenRulesVersionParser parser = new MavenRulesVersionParser();
 
     @ParameterizedTest
     @MethodSource("versionListProvider")

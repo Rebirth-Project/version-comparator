@@ -16,7 +16,7 @@
 package it.rebirthproject.versioncomparator.comparator;
 
 import it.rebirthproject.versioncomparator.parser.VersionParser;
-import it.rebirthproject.versioncomparator.utils.MavenVersionPadder;
+import it.rebirthproject.versioncomparator.utils.MavenRulesVersionPadder;
 import it.rebirthproject.versioncomparator.utils.TokenUtils;
 import it.rebirthproject.versioncomparator.version.MavenConstants;
 import it.rebirthproject.versioncomparator.version.PaddedLists;
@@ -24,27 +24,35 @@ import it.rebirthproject.versioncomparator.version.Version;
 import it.rebirthproject.versioncomparator.version.VersionReleaseTypes;
 import java.util.List;
 
-final public class MavenVersionComparator implements VersionComparator {
+public class MavenRulesVersionComparator implements VersionComparator {
 
-    private final VersionParser versionParser;
-    private final MavenVersionPadder mavenVersionPadder;
+    private final StandardVersionComparator standardVersionComparator;
+    private final VersionParser mavenVersionParser;
+    private final MavenRulesVersionPadder mavenVersionPadder;
 
-    MavenVersionComparator(VersionParser versionParser, MavenVersionPadder mavenVersionPadder) {
-        this.versionParser = versionParser;
+    MavenRulesVersionComparator(StandardVersionComparator standardVersionComparator, VersionParser mavenVersionParser, MavenRulesVersionPadder mavenVersionPadder) {
+        this.standardVersionComparator = standardVersionComparator;       
+        this.mavenVersionParser = mavenVersionParser;
         this.mavenVersionPadder = mavenVersionPadder;
     }
 
     @Override
     public int compare(String version1, String version2) throws IllegalArgumentException {
-        Version firstVersion = versionParser.parseVersion(version1);
-        Version secondVersion = versionParser.parseVersion(version2);
-        PaddedLists paddedLists = mavenVersionPadder.padShorterVersion(firstVersion.getTokenList(), secondVersion.getTokenList());
+        Version firstVersion;
+        Version secondVersion;
+        try {
+           return standardVersionComparator.compare(version1, version2);
+        } catch (IllegalArgumentException ex) {
+            firstVersion = mavenVersionParser.parseVersion(version1);
+            secondVersion = mavenVersionParser.parseVersion(version2);
+        }
 
+        PaddedLists paddedLists = mavenVersionPadder.padShorterVersion(firstVersion.getTokenList(), secondVersion.getTokenList());
         List<String> firstVersionTokenList = paddedLists.getVersion1();
         List<String> secondVersionTokenList = paddedLists.getVersion2();
 
         int size = firstVersionTokenList.size();
-       
+
         String token1 = firstVersionTokenList.get(0);
         String token2 = secondVersionTokenList.get(0);
 

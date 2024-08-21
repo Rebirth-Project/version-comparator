@@ -16,17 +16,18 @@
  */
 package it.rebirthproject.versioncomparator.comparator;
 
-import it.rebirthproject.versioncomparator.parser.MavenVersionParser;
-import it.rebirthproject.versioncomparator.utils.MavenVersionPadder;
+import it.rebirthproject.versioncomparator.parser.MavenRulesVersionParser;
+import it.rebirthproject.versioncomparator.parser.StrictSemanticVersionParser;
+import it.rebirthproject.versioncomparator.utils.MavenRulesVersionPadder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 // Based on examples provided by https://maven.apache.org/pom.html#Version_Order_Specification
 // Based on examples provided by https://docs.oracle.com/middleware/1212/core/MAVEN/maven_version.htm#MAVEN400
-public class MavenVersionComparatorTest {
+public class MavenRulesVersionComparatorTest {
 
-    private static final MavenVersionComparator mavenVersionComparator = new MavenVersionComparator(new MavenVersionParser(), new MavenVersionPadder());
+    private static final MavenRulesVersionComparator mavenVersionComparator = new MavenRulesVersionComparator(new MavenStandardVersionComparator(new StrictSemanticVersionParser()), new MavenRulesVersionParser(), new MavenRulesVersionPadder());
 
     @ParameterizedTest
     @CsvSource({
@@ -146,7 +147,8 @@ public class MavenVersionComparatorTest {
         "1.0.9-3, 1.0.10-2, -1",
         "1.0.9-3, 1.0.1-0, 1",
         "3.3.0-I20070605-10, 3.3.0, 1",
-        "3.3.0, 3.3.0-I20070605-10, -1"
+        "3.3.0, 3.3.0-I20070605-10, -1",
+        "0.99.9, 1.99.9-gamma-snapshot, -1"
     })
     public void compareMavenVersionOtherExamples(String version1, String version2, int expectedComparisonResult) {
         int actualComparisonResult = mavenVersionComparator.compare(version1, version2);

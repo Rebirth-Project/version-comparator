@@ -29,7 +29,7 @@ public class MavenVersionPaddingTest {
     @ParameterizedTest
     @MethodSource("versionListProvider")
     public void compareTest(List<String> version1, List<String> version2, PaddedLists expectedOutput) {
-        MavenVersionPadder mavenVersionPadder = new MavenVersionPadder();
+        MavenRulesVersionPadder mavenVersionPadder = new MavenRulesVersionPadder();
         PaddedLists result = mavenVersionPadder.padShorterVersion(version1, version2);
         assertEquals(expectedOutput.getVersion1(), result.getVersion1());
         assertEquals(expectedOutput.getVersion2(), result.getVersion2());

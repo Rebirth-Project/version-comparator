@@ -15,19 +15,20 @@
  */
 package it.rebirthproject.versioncomparator.comparator;
 
-import it.rebirthproject.versioncomparator.parser.MavenVersionParser;
+import it.rebirthproject.versioncomparator.parser.MavenRulesVersionParser;
 import it.rebirthproject.versioncomparator.parser.MinimalVersionParser;
 import it.rebirthproject.versioncomparator.parser.RelaxedSemanticVersionParser;
 import it.rebirthproject.versioncomparator.parser.StrictSemanticVersionParser;
 import it.rebirthproject.versioncomparator.parser.VersionMatchingParserType;
+import static it.rebirthproject.versioncomparator.parser.VersionMatchingParserType.MAVEN_SPECS_VERSION;
 import static it.rebirthproject.versioncomparator.parser.VersionMatchingParserType.MINIMAL_LENGTH_VERSION;
 import static it.rebirthproject.versioncomparator.parser.VersionMatchingParserType.STRICT_SEMANTIC_VERSION_STANDARD;
-import it.rebirthproject.versioncomparator.utils.MavenVersionPadder;
+import it.rebirthproject.versioncomparator.utils.MavenRulesVersionPadder;
 
 /**
  * A builder which can be used to create an {@link StandardVersionComparator}
  */
-public class VersionComparatorBuilder {
+public final class VersionComparatorBuilder {
 
     /**
      * The type {@link VersionMatchingParserType} of parser used to check if a
@@ -60,12 +61,24 @@ public class VersionComparatorBuilder {
         return this;
     }
 
+     /**
+     * Sets the {@link #versionMatchingParserType} attribute to strict semantic
+     * version parser.
+     *
+     * @return The {@link VersionComparatorBuilder} instance configured with the
+     * chosen strict semantic version parser.
+     */
+    public VersionComparatorBuilder useMavenRulesVersionParser() {
+        this.versionMatchingParserType = VersionMatchingParserType.MAVEN_SPECS_VERSION;
+        return this;
+    }
+    
     /**
      * Builds a {@link StandardVersionComparator} configured by
      * {@link VersionComparatorBuilder}'s properties eventually set or with
      * pre-configured default values
      *
-     * @return an {@link StandardVersionComparator} instance
+     * @return an {@link VersionComparator} instance
      *
      */
     public VersionComparator build() {
@@ -74,9 +87,8 @@ public class VersionComparatorBuilder {
                 return new StandardVersionComparator(new MinimalVersionParser());
             case STRICT_SEMANTIC_VERSION_STANDARD:
                 return new StandardVersionComparator(new StrictSemanticVersionParser());
-            case MAVEN_SPECS_VERSION:
-                //TODO here we need 2 parsers since first of all we should check if it is compliant with relaxed parser specs (mostly semantic version 1.0.0)
-                return new MavenVersionComparator(new MavenVersionParser(), new MavenVersionPadder());
+            case MAVEN_SPECS_VERSION:                
+                return new MavenRulesVersionComparator(new MavenStandardVersionComparator(new RelaxedSemanticVersionParser()), new MavenRulesVersionParser(), new MavenRulesVersionPadder());
             default:
                 return new StandardVersionComparator(new RelaxedSemanticVersionParser());
         }

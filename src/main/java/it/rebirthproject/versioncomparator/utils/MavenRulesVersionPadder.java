@@ -20,7 +20,7 @@ import it.rebirthproject.versioncomparator.version.PaddedLists;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MavenVersionPadder {
+public class MavenRulesVersionPadder {
 
     public PaddedLists padShorterVersion(List<String> version1, List<String> version2) {
         List<String> shorterList = version1.size() < version2.size() ? version1 : version2;

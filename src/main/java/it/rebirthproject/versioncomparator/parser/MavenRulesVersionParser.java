@@ -22,7 +22,7 @@ import it.rebirthproject.versioncomparator.version.Version;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MavenVersionParser implements VersionParser {
+public class MavenRulesVersionParser implements VersionParser {
 
     @Override
     public Version parseVersion(String version) throws IllegalArgumentException {
