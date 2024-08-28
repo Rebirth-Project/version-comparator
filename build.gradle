@@ -135,8 +135,8 @@ publishing {
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             
             credentials {
-                username = project.hasProperty('LocalSonatypeUsername') ? project.LocalSonatypeUsername : findProperty("sonatypeUsername")
-                password = project.hasProperty('LocalSonatypePassword') ? project.LocalSonatypePassword : findProperty("sonatypePassword")
+                username = project.hasProperty('LocalOssrhTokenUsername') ? project.LocalOssrhTokenUsername : findProperty("sonatypeTokenUsername")
+                password = project.hasProperty('LocalOssrhTokenPassword') ? project.LocalOssrhTokenPassword : findProperty("sonatypeYokenPassword")
             }
         }
     }
