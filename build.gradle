@@ -123,6 +123,7 @@ test {
     testLogging {
         exceptionFormat = 'full'
         showStandardStreams = true
+	events "PASSED", "SKIPPED", "FAILED"
     }
 }
 
