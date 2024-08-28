@@ -59,7 +59,8 @@ public enum VersionReleaseTypes {
      * The {@link VersionReleaseTypes}'s contructor.
      *
      * @param value The string value of the type.
-     * @param priority the priority of the type.
+     * @param semanticPriority the semantic version's priority of the type.
+     * @param mavenPriority the Maven specs' priority of the type.
      */
     private VersionReleaseTypes(String value, int semanticPriority, int mavenPriority) {
         this.value = value;
