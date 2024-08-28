@@ -120,8 +120,8 @@ public class MavenRulesVersionComparator implements VersionComparator {
             return 1;
         }
 
-        //If both qualifiers are unknown then compare lexicographically.
-        return token1.compareTo(token2);
+        //If both qualifiers are unknown then compare lexicographically and normalize the result to 0.
+        return Integer.compare(token1.compareTo(token2), 0);
     }
 
     private int compareTokensWithSeparator(String separator1, String token1, String token2) {

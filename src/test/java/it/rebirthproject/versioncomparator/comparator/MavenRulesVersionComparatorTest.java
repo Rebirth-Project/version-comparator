@@ -78,7 +78,8 @@ public class MavenRulesVersionComparatorTest {
         "1-final, 1, 0",
         "1, 1-final, 0",
         "1-1.foo-bar1baz-.1, 1-1.foo-bar-1-baz-0.1, 0",
-        "1-1.foo-bar-1-baz-0.1, 1-1.foo-bar1baz-.1, 0"
+        "1-1.foo-bar-1-baz-0.1, 1-1.foo-bar1baz-.1, 0",
+        "1-1.foo-bar1baz-.1, 1-1.bar, 1"
     })
     public void compareMavenVersionDocumentationExamples(String version1, String version2, int expectedComparisonResult) {
         int actualComparisonResult = mavenVersionComparator.compare(version1, version2);
