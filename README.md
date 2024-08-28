@@ -1,7 +1,7 @@
 # Version Comparator ![Version Comparator Icon](icon/versioncomparator.png)
 Version Comparator is an ultra-micro library written in java that lets you compare version numbers. 
 
-**```Latest Version 1.0.1```**
+**```Latest Version 1.1.0```**
 
 ![Build Status](https://github.com/Rebirth-Project/version-comparator/actions/workflows/build.yml/badge.svg?raw=true)
 
@@ -31,7 +31,7 @@ Version Comparator is an ultra-micro library written in java that lets you compa
 
 ```
 dependencies {
-    implementation "it.rebirthproject:version-comparator:1.0.1"
+    implementation "it.rebirthproject:version-comparator:1.1.0"
 }
 ```
 ##### Maven:
@@ -40,7 +40,7 @@ dependencies {
 <dependency>
     <groupId>it.rebirthproject</groupId>
     <artifactId>version-comparator</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -57,6 +57,7 @@ The qualifier types recognized by the relaxed parser are the following and in th
  - PRE_ALPHA
  - ALPHA
  - BETA
+ - MILESTONE
  - RC
  - STABLE
  - FINAL
@@ -88,6 +89,7 @@ try {
     int comp1=vc.compare("1.0.0-FINAL", "1.0.0-RC");
     int comp2=vc.compare("1.0.0", "1.0.1");
     int comp3=vc.compare("1.0.0-FINAL+build2024", "1.0.0-RC+build2023");
+    int comp4=vc.compare("1-1.foo-bar1baz-.1", "1-1.bar");
 } catch (IllegalArgumentException ex) {
     //Do something here in case of exception
 }
