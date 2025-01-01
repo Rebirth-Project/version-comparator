@@ -26,11 +26,11 @@ import java.util.List;
 
 public class MavenRulesVersionComparator implements VersionComparator {
 
-    private final StandardVersionComparator standardVersionComparator;
+    private final MavenStandardVersionComparator standardVersionComparator;
     private final VersionParser mavenVersionParser;
     private final MavenRulesVersionPadder mavenVersionPadder;
 
-    MavenRulesVersionComparator(StandardVersionComparator standardVersionComparator, VersionParser mavenVersionParser, MavenRulesVersionPadder mavenVersionPadder) {
+    MavenRulesVersionComparator(MavenStandardVersionComparator standardVersionComparator, VersionParser mavenVersionParser, MavenRulesVersionPadder mavenVersionPadder) {
         this.standardVersionComparator = standardVersionComparator;       
         this.mavenVersionParser = mavenVersionParser;
         this.mavenVersionPadder = mavenVersionPadder;
