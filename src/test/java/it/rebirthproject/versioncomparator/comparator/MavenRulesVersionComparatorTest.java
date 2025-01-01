@@ -88,6 +88,7 @@ public class MavenRulesVersionComparatorTest {
 
     @ParameterizedTest
     @CsvSource({
+        "2.6.1.Final, 2.6.1.Final, 0",
         "5, 5-SNAPSHOT, 1",
         "5-SNAPSHOT, 5, -1",
         "5, 5, 0",
