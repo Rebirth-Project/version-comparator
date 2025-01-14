@@ -23,7 +23,7 @@ jobs:
       - name: Gradle Info
         run: ./gradlew -version
       - name: Build with Gradle
-        run: ./gradlew publish  
+        run: ./gradlew publish --info
         env:
             ORG_GRADLE_PROJECT_sonatypeTokenPassword: ${{ secrets.SONATYPE_TOKEN_PASSWORD }}
             ORG_GRADLE_PROJECT_sonatypeTokenUsername: ${{ secrets.SONATYPE_TOKEN_USERNAME }}
