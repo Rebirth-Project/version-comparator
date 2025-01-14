@@ -26,26 +26,18 @@ import java.util.List;
 
 public class MavenRulesVersionComparator implements VersionComparator {
 
-    private final MavenStandardVersionComparator standardVersionComparator;
     private final VersionParser mavenVersionParser;
     private final MavenRulesVersionPadder mavenVersionPadder;
 
-    MavenRulesVersionComparator(MavenStandardVersionComparator standardVersionComparator, VersionParser mavenVersionParser, MavenRulesVersionPadder mavenVersionPadder) {
-        this.standardVersionComparator = standardVersionComparator;       
+    MavenRulesVersionComparator(VersionParser mavenVersionParser, MavenRulesVersionPadder mavenVersionPadder) {
         this.mavenVersionParser = mavenVersionParser;
         this.mavenVersionPadder = mavenVersionPadder;
     }
 
     @Override
     public int compare(String version1, String version2) throws IllegalArgumentException {
-        Version firstVersion;
-        Version secondVersion;
-        try {
-           return standardVersionComparator.compare(version1, version2);
-        } catch (IllegalArgumentException ex) {
-            firstVersion = mavenVersionParser.parseVersion(version1);
-            secondVersion = mavenVersionParser.parseVersion(version2);
-        }
+        Version firstVersion = mavenVersionParser.parseVersion(version1);
+        Version secondVersion = mavenVersionParser.parseVersion(version2);
 
         PaddedLists paddedLists = mavenVersionPadder.padShorterVersion(firstVersion.getTokenList(), secondVersion.getTokenList());
         List<String> firstVersionTokenList = paddedLists.getVersion1();

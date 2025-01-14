@@ -88,7 +88,7 @@ public final class VersionComparatorBuilder {
             case STRICT_SEMANTIC_VERSION_STANDARD:
                 return new StandardVersionComparator(new StrictSemanticVersionParser());
             case MAVEN_SPECS_VERSION:                
-                return new MavenRulesVersionComparator(new MavenStandardVersionComparator(new StrictSemanticVersionParser()), new MavenRulesVersionParser(), new MavenRulesVersionPadder());
+                return new MavenRulesVersionComparator(new MavenRulesVersionParser(), new MavenRulesVersionPadder());
             default:
                 return new StandardVersionComparator(new RelaxedSemanticVersionParser());
         }

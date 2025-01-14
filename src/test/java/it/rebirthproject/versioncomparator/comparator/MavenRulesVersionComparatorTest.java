@@ -17,7 +17,6 @@
 package it.rebirthproject.versioncomparator.comparator;
 
 import it.rebirthproject.versioncomparator.parser.MavenRulesVersionParser;
-import it.rebirthproject.versioncomparator.parser.StrictSemanticVersionParser;
 import it.rebirthproject.versioncomparator.utils.MavenRulesVersionPadder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,7 +26,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 // Based on examples provided by https://docs.oracle.com/middleware/1212/core/MAVEN/maven_version.htm#MAVEN400
 public class MavenRulesVersionComparatorTest {
 
-    private static final MavenRulesVersionComparator mavenVersionComparator = new MavenRulesVersionComparator(new MavenStandardVersionComparator(new StrictSemanticVersionParser()), new MavenRulesVersionParser(), new MavenRulesVersionPadder());
+    private static final MavenRulesVersionComparator mavenVersionComparator = new MavenRulesVersionComparator(new MavenRulesVersionParser(), new MavenRulesVersionPadder());
 
     @ParameterizedTest
     @CsvSource({
