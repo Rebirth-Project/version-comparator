@@ -1,7 +1,7 @@
 # Version Comparator ![Version Comparator Icon](icon/versioncomparator.png)
 Version Comparator is an ultra-micro library written in java that lets you compare version numbers. 
 
-**```Latest Version 1.1.1```**
+**```Latest Version 1.1.2```**
 
 ![Build Status](https://github.com/Rebirth-Project/version-comparator/actions/workflows/build.yml/badge.svg?raw=true)
 
@@ -31,7 +31,7 @@ Version Comparator is an ultra-micro library written in java that lets you compa
 
 ```
 dependencies {
-    implementation "it.rebirthproject:version-comparator:1.1.1"
+    implementation "it.rebirthproject:version-comparator:1.1.2"
 }
 ```
 ##### Maven:
@@ -109,9 +109,9 @@ It would be a shame to reject your pull request if it might not align with the p
 For direct communications, you can use this [email](mailto:rebirthproject2021@gmail.com)
 
 ## Credits and License
-Copyright (C) 2024 [Andrea Paternesi](https://github.com/patton73)
+Copyright (C) 2024/2025 [Andrea Paternesi](https://github.com/patton73)
 
-Copyright (C) 2024 [Matteo Veroni](https://github.com/mavek87)
+Copyright (C) 2024/2025 [Matteo Veroni](https://github.com/mavek87)
  
 Current website under creation [Rebirth Project](https://www.rebirth-project.it)
 
