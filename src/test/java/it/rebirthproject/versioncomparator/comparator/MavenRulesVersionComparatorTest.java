@@ -155,4 +155,26 @@ public class MavenRulesVersionComparatorTest {
         int actualComparisonResult = mavenVersionComparator.compare(version1, version2);
         assertEquals(expectedComparisonResult, actualComparisonResult);
     }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1-foo, 1-FOO, 0",
+        "1-zebra, 1-AARDVARK, 1",
+        "1-é, 1-É, 0"
+    })
+    public void compareMavenVersionCaseInsensitiveQualifierRules(String version1, String version2, int expectedComparisonResult) {
+        int actualComparisonResult = mavenVersionComparator.compare(version1, version2);
+        assertEquals(expectedComparisonResult, actualComparisonResult);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "2147483648, 2147483647",
+        "1-2147483648, 1-2147483647",
+        "1.2147483648, 1.2147483647"
+    })
+    public void compareMavenVersionShouldNotThrowWithLargeNumericTokens(String version1, String version2) {
+        int actualComparisonResult = mavenVersionComparator.compare(version1, version2);
+        assertEquals(1, actualComparisonResult);
+    }
 }

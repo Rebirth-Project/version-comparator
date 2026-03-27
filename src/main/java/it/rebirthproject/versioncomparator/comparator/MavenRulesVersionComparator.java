@@ -48,7 +48,7 @@ public class MavenRulesVersionComparator implements VersionComparator {
         String token1 = firstVersionTokenList.get(0);
         String token2 = secondVersionTokenList.get(0);
 
-        int compareResult = Integer.compare(Integer.parseInt(token1), Integer.parseInt(token2));
+        int compareResult = compareNumericTokens(token1, token2);
         if (compareResult != 0) {
             return compareResult;
         } else {
@@ -83,7 +83,7 @@ public class MavenRulesVersionComparator implements VersionComparator {
 
         // Check if both tokens are numeric
         if (token1IsNumber && token2IsNumber) {
-            return Integer.compare(Integer.parseInt(token1), Integer.parseInt(token2));
+            return compareNumericTokens(token1, token2);
         }
 
         // Check if one is numeric and the other is a string
@@ -112,8 +112,8 @@ public class MavenRulesVersionComparator implements VersionComparator {
             return 1;
         }
 
-        //If both qualifiers are unknown then compare lexicographically and normalize the result to 0.
-        return Integer.compare(token1.compareTo(token2), 0);
+        //If both qualifiers are unknown then compare case-insensitively and normalize the result.
+        return Integer.compare(token1.compareToIgnoreCase(token2), 0);
     }
 
     private int compareTokensWithSeparator(String separator1, String token1, String token2) {
@@ -136,5 +136,23 @@ public class MavenRulesVersionComparator implements VersionComparator {
 
         // One is a number and the other is a string
         return token1IsNumber ? 1 : -1;
+    }
+
+    /**
+     * Compares numeric tokens without integer parsing to avoid overflow.
+     *
+     * @param token1 The first numeric token.
+     * @param token2 The second numeric token.
+     *
+     * @return An integer indicating whether the first token is greater (1), equal (0),
+     * or lesser (-1) than the second token.
+     */
+    private int compareNumericTokens(String token1, String token2) {
+        int lengthComparison = Integer.compare(token1.length(), token2.length());
+        if (lengthComparison != 0) {
+            return lengthComparison;
+        }
+
+        return Integer.compare(token1.compareTo(token2), 0);
     }
 }
