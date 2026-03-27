@@ -16,6 +16,7 @@
 package it.rebirthproject.versioncomparator.comparator;
 
 import it.rebirthproject.versioncomparator.parser.RelaxedSemanticVersionParser;
+import it.rebirthproject.versioncomparator.parser.StrictSemanticVersionParser;
 import it.rebirthproject.versioncomparator.version.Version;
 import it.rebirthproject.versioncomparator.version.VersionReleaseTypes;
 import it.rebirthproject.versioncomparator.parser.VersionParser;
@@ -82,6 +83,8 @@ public class StandardVersionComparator implements VersionComparator {
             int qualifierComparison = compareQualifiers(firstVersion.getQualifier(), secondVersion.getQualifier());
             if (qualifierComparison != 0) {
                 return qualifierComparison;
+            } else if (versionParser instanceof StrictSemanticVersionParser) {
+                return 0;
             } else {
                 return compareBuildMetadata(firstVersion.getBuildMetadata(), secondVersion.getBuildMetadata());
             }
