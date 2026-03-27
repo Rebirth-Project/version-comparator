@@ -85,7 +85,11 @@ public class StandardVersionComparatorTest {
         "111.27.0, 13.40.888-FINal, 1",
         "111.27.0, 111.27.0-FINal-TTT, -1",
         "1.0.0+build1, 1.0.0+build2, 0",
-        "1.0.0-alpha+001, 1.0.0-alpha+999, 0"
+        "1.0.0-alpha+001, 1.0.0-alpha+999, 0",
+        "1.0.0-beta.2, 1.0.0-beta.11, -1",
+        "1.0.0-beta.11, 1.0.0-beta.2, 1",
+        "1.0.0-alpha.10, 1.0.0-alpha.2, 1",
+        "1.0.0-alpha.2, 1.0.0-alpha.10, -1"
     })
     public void compareStrictSemanticVersionTest(String version1, String version2, int expectedComparisonResult) {
         int actualComparisonResult = new StandardVersionComparator(new StrictSemanticVersionParser()).compare(version1, version2);

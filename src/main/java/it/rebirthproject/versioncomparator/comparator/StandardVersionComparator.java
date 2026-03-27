@@ -117,9 +117,65 @@ public class StandardVersionComparator implements VersionComparator {
 
         if (releaseTypeUniqueInQualifier) {
             return compareReleaseTypesInQualifier(firstVersionQualifier, secondVersionQualifier);
+        } else if (versionParser instanceof StrictSemanticVersionParser) {
+            return compareStrictSemanticPrerelease(firstVersionQualifier, secondVersionQualifier);
         } else {
             return firstVersionQualifier.compareToIgnoreCase(secondVersionQualifier);
         }
+    }
+
+    /**
+     * Compares strict semantic pre-release identifiers according to SemVer precedence rules.
+     *
+     * @param firstVersionQualifier The first qualifier to compare.
+     * @param secondVersionQualifier The second qualifier to compare.
+     *
+     * @return An integer indicating whether the first qualifier is greater (1), equal (0),
+     * or lesser (-1) than the second qualifier.
+     */
+    private int compareStrictSemanticPrerelease(String firstVersionQualifier, String secondVersionQualifier) {
+        String[] firstIdentifiers = firstVersionQualifier.split("\\.");
+        String[] secondIdentifiers = secondVersionQualifier.split("\\.");
+        int commonIdentifiersCount = Math.min(firstIdentifiers.length, secondIdentifiers.length);
+
+        for (int i = 0; i < commonIdentifiersCount; i++) {
+            String firstIdentifier = firstIdentifiers[i];
+            String secondIdentifier = secondIdentifiers[i];
+            boolean firstNumeric = isNumericIdentifier(firstIdentifier);
+            boolean secondNumeric = isNumericIdentifier(secondIdentifier);
+
+            if (firstNumeric && secondNumeric) {
+                int lengthComparison = Integer.compare(firstIdentifier.length(), secondIdentifier.length());
+                if (lengthComparison != 0) {
+                    return lengthComparison;
+                }
+
+                int lexicalNumericComparison = Integer.signum(firstIdentifier.compareTo(secondIdentifier));
+                if (lexicalNumericComparison != 0) {
+                    return lexicalNumericComparison;
+                }
+            } else if (firstNumeric != secondNumeric) {
+                return firstNumeric ? -1 : 1;
+            } else {
+                int lexicalComparison = Integer.signum(firstIdentifier.compareTo(secondIdentifier));
+                if (lexicalComparison != 0) {
+                    return lexicalComparison;
+                }
+            }
+        }
+
+        return Integer.compare(firstIdentifiers.length, secondIdentifiers.length);
+    }
+
+    /**
+     * Checks if an identifier contains only numeric characters.
+     *
+     * @param identifier The identifier to check.
+     *
+     * @return true if the identifier is numeric, false otherwise.
+     */
+    private boolean isNumericIdentifier(String identifier) {
+        return identifier.matches("\\d+");
     }
     
      /**
