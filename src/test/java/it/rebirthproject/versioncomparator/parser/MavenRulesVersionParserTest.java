@@ -43,7 +43,10 @@ public class MavenRulesVersionParserTest {
         "001",
         "1&-ok",
         "1-beta.09",
-        "2.3.3.3-b01"
+        "2.3.3.3-b01",
+        "''",
+        "' '",
+        "'   '"
     })
     public void invalidVersionsTest(String invalidVersion) {
         assertThrows(IllegalArgumentException.class, () -> {

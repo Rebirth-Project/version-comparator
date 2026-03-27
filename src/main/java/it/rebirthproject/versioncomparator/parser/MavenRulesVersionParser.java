@@ -33,6 +33,10 @@ public class MavenRulesVersionParser implements VersionParser {
             throw new IllegalArgumentException("Invalid Maven version string format: version is \"" + version + "\"");
         }
 
+        if (version.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invalid Maven version string format: version is blank");
+        }
+
         Character c = version.charAt(0);
         MavenCharType previousCharType = getCharType(c);
 
