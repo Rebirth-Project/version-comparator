@@ -42,7 +42,8 @@ public class MavenRulesVersionParserTest {
         "1.02",
         "001",
         "1&-ok",
-        "1-beta.09"
+        "1-beta.09",
+        "2.3.3.3-b01"
     })
     public void invalidVersionsTest(String invalidVersion) {
         assertThrows(IllegalArgumentException.class, () -> {
@@ -68,7 +69,7 @@ public class MavenRulesVersionParserTest {
                 Arguments.of("1-0.1", new Version(Arrays.asList("1", "-", "0", ".", "1"))),
                 Arguments.of("1-0-1", new Version(Arrays.asList("1", "-", "1"))),
                 Arguments.of("1-0.1-1", new Version(Arrays.asList("1", "-", "0", ".", "1", "-", "1"))),
-                Arguments.of("1-0-1-1", new Version(Arrays.asList("1",  "-", "1", "-", "1")))
+                Arguments.of("1-0-1-1", new Version(Arrays.asList("1",  "-", "1", "-", "1")))                
         );
     }
 }

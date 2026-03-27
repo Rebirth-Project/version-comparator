@@ -56,7 +56,10 @@ public class StandardVersionComparatorTest {
         "1.2.0stable, 1.2.0, 1",
         "1.2.0, 1.2.0FINal, -1",
         "111.27.0, 13.40.888FINal, 1",
-        "111.27.0, 111.27.0FINal-TTT, -1"    
+        "111.27.0, 111.27.0FINal-TTT, -1",
+        "1.0.0-foo, 1.0.0-foo, 0",
+        "1.0.0-foo, 1.0.0-bar, 1",
+        "1.0.0-bar, 1.0.0-foo, -1"
     })
     public void compareRelaxedSemanticVersionTest(String version1, String version2, int expectedComparisonResult) {
         int actualComparisonResult = new StandardVersionComparator(new RelaxedSemanticVersionParser()).compare(version1, version2);

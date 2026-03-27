@@ -67,7 +67,11 @@ public class MavenRulesVersionParser implements VersionParser {
             }
         }
         tokenList.add(token.toString());
-
+        
+        //for (String string : tokenList) {
+        //    System.out.println(""+string);
+        //}
+        
         checkForInvalidNumericTokens(version, tokenList);
         replaceEmptyTokensWithZero(tokenList);
         trimNullValues(tokenList);

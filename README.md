@@ -46,9 +46,9 @@ dependencies {
 
 ## Introduction
 
-The version comparator can compare versions provided in string format. Currently, the library checks whether a passed version conforms to the internal parser rules. It throws an exception if an invalid version is provided as input. The library in its current state of the art has three different parsers to choose from:
+The version comparator can compare versions provided in string format. Currently, the library checks whether a passed version conforms to the internal parser rules. It throws an exception if an invalid version is provided as input. The library in its current state of the art has four different parsers to choose from:
 
-1. a minimal parser (version format X.Y.Z)
+1. a minimal parser (version format X.Y or X.Y.Z)
 2. a semantic version parser (the standard semantic version you can find here  [https://semver.org/](https://semver.org/), that basically parses this version format X.Y.Z-QUALIFIER+buildmetadata)
 3. a relaxed semantic version parser that is the default choice to build the comparator and is basically the version standard used by Maven artifacts (version format X.Y.Z-QUALIFIER where the qualifier should be a unique type string).
 The qualifier types recognized by the relaxed parser are the following and in this order of priority: 
@@ -64,6 +64,86 @@ The qualifier types recognized by the relaxed parser are the following and in th
 
 4. a complete Maven's rules compliant version parser (you can find here the specs [https://maven.apache.org/pom.html#version-order-specification](https://maven.apache.org/pom.html#version-order-specification))
 
+### Minimal parser format
+
+The minimal parser accepts versions in the form `X.Y` or `X.Y.Z`, where:
+- `X` = major
+- `Y` = minor
+- `Z` = optional patch
+
+Examples of valid minimal versions:
+- `1.2`
+- `1.2.0`
+- `10.0.99999`
+
+Notes:
+- Numeric parts cannot have leading zeros (except `0` itself), e.g. `01.2.3` is invalid.
+- If patch is omitted (`X.Y`), it is considered lower than an explicit patch value during comparison (for example `1.2 < 1.2.0`).
+
+### Strict semantic parser format
+
+The strict semantic parser validates versions according to Semantic Versioning rules (https://semver.org/).
+
+Expected format:
+- `X.Y.Z`
+- optional pre-release part: `-QUALIFIER`
+- optional build metadata: `+BUILDMETADATA`
+
+Examples of valid strict semantic versions:
+- `1.2.3`
+- `1.2.3-alpha`
+- `1.2.3-alpha.1`
+- `1.2.3+build.2024`
+- `1.2.3-rc.1+build.5`
+
+Notes:
+- Major, minor and patch are mandatory.
+- Numeric identifiers cannot contain leading zeros (except `0` itself).
+- Invalid examples: `1.2`, `01.2.3`, `1.2.3-01`.
+
+### Relaxed semantic parser format (default)
+
+The relaxed semantic parser is the default parser used by the builder and supports a Maven-like qualifier style.
+
+Expected format:
+- `X.Y.Z`
+- optional qualifier appended to the numeric part (for example `-RC`, `.FINAL`, `SNAPSHOT`)
+
+Examples of valid relaxed semantic versions:
+- `1.2.3`
+- `1.2.3-RC`
+- `1.2.3.FINAL`
+- `1.2.3SNAPSHOT`
+- `10.20.30-DEV-SNAPSHOT`
+
+Notes:
+- This parser is intentionally less strict than full Semantic Versioning.
+- If a known release type is used in the qualifier, it must be unique (for example avoid combinations like `SNAPSHOT-RC`).
+- Build metadata using `+...` is not supported by this parser.
+
+### Maven rules parser format
+
+The Maven rules parser follows Maven version ordering rules:
+https://maven.apache.org/pom.html#version-order-specification
+
+Accepted versions can include:
+- numbers
+- separators (`.` and `-`)
+- qualifiers (for example `alpha`, `beta`, `rc`, `snapshot`, `final`, `ga`, `sp`)
+- mixed token transitions (for example `foo1`, `1foo`)
+
+Examples of valid Maven versions:
+- `1`
+- `1.0`
+- `1.0-rc1`
+- `1.0-final`
+- `1-1.foo-bar1baz-.1`
+
+Notes:
+- Version comparison follows Maven precedence semantics, including known qualifier ordering.
+- Invalid characters are rejected.
+- Numeric tokens with leading zeros are rejected (for example `1.02`, `1-beta.09`).
+
 ## Usage
 
 ``` java
@@ -73,7 +153,7 @@ The qualifier types recognized by the relaxed parser are the following and in th
 VersionComparator vc = new VersionComparatorBuilder().build();
 
 //create a minimal version comparator 
-//version to check is in this format X.Y.Z
+//version to check is in this format X.Y or X.Y.Z
 VersionComparator vc = new VersionComparatorBuilder().useMinimalVersionParser().build();
 
 //create a semantic version comparator (https://semver.org/)

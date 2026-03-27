@@ -28,12 +28,13 @@ plugins {
     id "signing"
     id "java-library"
     id 'maven-publish'
-    id 'org.javamodularity.moduleplugin' version '1.8.15'
+    id 'org.javamodularity.moduleplugin' version '2.0.0'
     id 'net.researchgate.release' version '3.1.0'
+    id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
 }
 
 wrapper() {    
-    gradleVersion = '8.12'
+    gradleVersion = '9.4.0'
 }
 
 group = 'it.rebirthproject'
@@ -54,6 +55,11 @@ repositories {
     mavenCentral()
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 compileJava {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     options.encoding = "UTF-8"
@@ -68,9 +74,11 @@ compileTestJava {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.4'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.4'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:6.0.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:6.0.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:6.0.3'
+    
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -103,20 +111,6 @@ javadoc {
     options.setWindowTitle("Version Comparator JavaDoc")
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier.set("javadoc")   
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    archiveClassifier.set("sources")
-    from sourceSets.main.allSource    
-}
-
-artifacts {
-    archives jar, javadocJar, sourcesJar
-}
-
 test {
     //    debug = true
     useJUnitPlatform()
@@ -127,20 +121,19 @@ test {
     }
 }
 
-publishing {
+nexusPublishing {
     repositories {
-        maven {
-            name = "OSSRH"
-            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        sonatype {
+            username = project.hasProperty('LocalMavenCentralUsername') ? project.LocalMavenCentralUsername : findProperty("mavenCentralUsername")
+            password = project.hasProperty('LocalMavenCentralPassword') ? project.LocalMavenCentralPassword : findProperty("mavenCentralPassword")
             
-            credentials {
-                username = project.hasProperty('LocalOssrhTokenUsername') ? project.LocalOssrhTokenUsername : findProperty("sonatypeTokenUsername")
-                password = project.hasProperty('LocalOssrhTokenPassword') ? project.LocalOssrhTokenPassword : findProperty("sonatypeTokenPassword")
-            }
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
         }
     }
+}
+
+publishing {    
     publications {
         mavenJava(MavenPublication) {
             from(components.java)

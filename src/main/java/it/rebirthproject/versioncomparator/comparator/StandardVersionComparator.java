@@ -130,9 +130,15 @@ public class StandardVersionComparator implements VersionComparator {
      * qualifier.
      */
     protected int compareReleaseTypesInQualifier(String firstVersionQualifier, String secondVersionQualifier) {
+        String normalizedFirstVersionQualifier = normalizeQualifier(firstVersionQualifier);
+        String normalizedSecondVersionQualifier = normalizeQualifier(secondVersionQualifier);
         String[] arrayValues = VersionReleaseTypes.getValues();
-        Optional<String> optionalStringReleaseTypeFirstVersion = Arrays.stream(arrayValues).filter(s -> s.equals(firstVersionQualifier)).findFirst();
-        Optional<String> optionalStringReleaseTypeSecondVersion = Arrays.stream(arrayValues).filter(s -> s.equals(secondVersionQualifier)).findFirst();
+        Optional<String> optionalStringReleaseTypeFirstVersion = Arrays.stream(arrayValues).filter(s -> s.equalsIgnoreCase(normalizedFirstVersionQualifier)).findFirst();
+        Optional<String> optionalStringReleaseTypeSecondVersion = Arrays.stream(arrayValues).filter(s -> s.equalsIgnoreCase(normalizedSecondVersionQualifier)).findFirst();
+
+        if (!optionalStringReleaseTypeFirstVersion.isPresent() && !optionalStringReleaseTypeSecondVersion.isPresent()) {
+            return Integer.compare(normalizedFirstVersionQualifier.compareToIgnoreCase(normalizedSecondVersionQualifier), 0);
+        }
 
         if (!optionalStringReleaseTypeFirstVersion.isPresent()) {
             return isStableOrFinal(secondVersionQualifier) ? 1 : -1;
@@ -144,6 +150,17 @@ public class StandardVersionComparator implements VersionComparator {
 
             return Integer.compare(priorityReleaseTypeFirstVersion, priorityReleaseTypeSecondVersion);
         }
+    }
+
+    /**
+     * Normalizes the qualifier by removing leading separators used by relaxed semantic parsing.
+     *
+     * @param qualifier The qualifier to normalize.
+     *
+     * @return The normalized qualifier.
+     */
+    private String normalizeQualifier(String qualifier) {
+        return qualifier.replaceFirst("^[.-]+", "");
     }
     
      /**
