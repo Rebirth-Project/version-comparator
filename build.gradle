@@ -136,9 +136,7 @@ nexusPublishing {
 publishing {    
     publications {
         mavenJava(MavenPublication) {
-            from(components.java)
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
+            from(components.java)           
             pom {
                 name = 'versioncomparator'
                 description = 'Version Comparator: Micro library to compare jar versions for java and android'
