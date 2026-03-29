@@ -35,4 +35,17 @@ public class VersionReleaseTypesTest {
         String regex = VersionReleaseTypes.getRegexToCheckReleaseTypeUniqueness();        
         assertEquals(expectedResult, qualifiers.matches(regex));
     }
+
+    @ParameterizedTest
+    @CsvSource({
+        "b,B",
+        "B,B",
+        "beta,BETA",
+        "BETA,BETA"
+    })
+    public void should_ReturnReleaseType_When_MatchingByValueOrEnumName(String releaseTypeToken, VersionReleaseTypes expectedReleaseType) {
+        VersionReleaseTypes actualReleaseType = VersionReleaseTypes.getValueOfReleaseTypes(releaseTypeToken);
+
+        assertEquals(expectedReleaseType, actualReleaseType);
+    }
 }

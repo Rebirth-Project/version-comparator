@@ -18,6 +18,7 @@ package it.rebirthproject.versioncomparator.comparator;
 
 import it.rebirthproject.versioncomparator.parser.MavenRulesVersionParser;
 import it.rebirthproject.versioncomparator.utils.MavenRulesVersionPadder;
+import java.util.Locale;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -34,8 +35,8 @@ public class MavenRulesVersionComparatorTest {
         "1.0-aab, 1.0-aaa, 1",
         "1.0-alpha, 1.0-aaa, -1",
         "1.0-aaa, 1.0-alpha, 1",
-        "1.0.alpha, 1.0-aaa, 1",
-        "1.0-aaa, 1.0.alpha, -1",
+        "1.0.alpha, 1.0-aaa, -1",
+        "1.0-aaa, 1.0.alpha, 1",
         "1.0-alpha, 1.0.aaa, -1",
         "1.0.aaa, 1.0-alpha, 1",
         "1.0, 1.0.aaa, -1",
@@ -176,5 +177,296 @@ public class MavenRulesVersionComparatorTest {
     public void compareMavenVersionShouldNotThrowWithLargeNumericTokens(String version1, String version2) {
         int actualComparisonResult = mavenVersionComparator.compare(version1, version2);
         assertEquals(1, actualComparisonResult);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1-alpha2snapshot,1-alpha2",
+        "1-alpha2,1-alpha-123",
+        "1-alpha-123,1-beta-2",
+        "1-beta-2,1-beta123",
+        "1-beta123,1-m2",
+        "1-m2,1-m11",
+        "1-m11,1-rc",
+        "1-rc,1-cr2",
+        "1-cr2,1-rc123",
+        "1-rc123,1-SNAPSHOT",
+        "1-SNAPSHOT,1",
+        "1,1-sp",
+        "1-sp,1-sp2",
+        "1-sp2,1-sp123",
+        "1-sp123,1-abc",
+        "1-abc,1-def",
+        "1-def,1-pom-1",
+        "1-pom-1,1-1-snapshot",
+        "1-1-snapshot,1-1",
+        "1-1,1-2",
+        "1-2,1-123"
+    })
+    public void should_CompareMavenQualifierOrder_When_ComparableVersionCases(String lowerVersion, String higherVersion) {
+        assertComparison(lowerVersion, higherVersion, -1);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "2.0,2.0.a",
+        "2.0.a,2-1",
+        "2-1,2.0.2",
+        "2.0.2,2.0.123",
+        "2.0.123,2.1.0",
+        "2.1.0,2.1-a",
+        "2.1-a,2.1b",
+        "2.1b,2.1-c",
+        "2.1-c,2.1-1",
+        "2.1-1,2.1.0.1",
+        "2.1.0.1,2.2",
+        "2.2,2.123",
+        "2.123,11.a2",
+        "11.a2,11.a11",
+        "11.a11,11.b2",
+        "11.b2,11.b11",
+        "11.b11,11.m2",
+        "11.m2,11.m11",
+        "11.m11,11",
+        "11,11.a",
+        "11.a,11b",
+        "11b,11c",
+        "11c,11m"
+    })
+    public void should_CompareMavenNumberOrder_When_ComparableVersionCases(String lowerVersion, String higherVersion) {
+        assertComparison(lowerVersion, higherVersion, -1);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1,1",
+        "1,1.0",
+        "1,1.0.0",
+        "1.0,1.0.0",
+        "1,1-0",
+        "1,1.0-0",
+        "1.0,1.0-0",
+        "1a,1-a",
+        "1a,1.0-a",
+        "1a,1.0.0-a",
+        "1.0a,1-a",
+        "1.0.0a,1-a",
+        "1x,1-x",
+        "1x,1.0-x",
+        "1x,1.0.0-x",
+        "1.0x,1-x",
+        "1.0.0x,1-x",
+        "1ga,1",
+        "1release,1",
+        "1final,1",
+        "1cr,1rc",
+        "1a1,1-alpha-1",
+        "1b2,1-beta-2",
+        "1m3,1-milestone-3",
+        "1X,1x",
+        "1A,1a",
+        "1B,1b",
+        "1M,1m",
+        "1Ga,1",
+        "1GA,1",
+        "1RELEASE,1",
+        "1release,1",
+        "1RELeaSE,1",
+        "1Final,1",
+        "1FinaL,1",
+        "1FINAL,1",
+        "1Cr,1Rc",
+        "1cR,1rC",
+        "1m3,1Milestone3",
+        "1m3,1MileStone3",
+        "1m3,1MILESTONE3"
+    })
+    public void should_CompareMavenEquality_When_ComparableVersionCases(String firstVersion, String secondVersion) {
+        assertComparison(firstVersion, secondVersion, 0);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1,2",
+        "1.5,2",
+        "1,2.5",
+        "1.0,1.1",
+        "1.1,1.2",
+        "1.0.0,1.1",
+        "1.0.1,1.1",
+        "1.1,1.2.0",
+        "1.0-alpha-1,1.0",
+        "1.0-alpha-1,1.0-alpha-2",
+        "1.0-alpha-1,1.0-beta-1",
+        "1.0-beta-1,1.0-SNAPSHOT",
+        "1.0-SNAPSHOT,1.0",
+        "1.0-alpha-1-SNAPSHOT,1.0-alpha-1",
+        "1.0,1.0-1",
+        "1.0-1,1.0-2",
+        "1.0.0,1.0-1",
+        "2.0-1,2.0.1",
+        "2.0.1-klm,2.0.1-lmn",
+        "2.0.1,2.0.1-xyz",
+        "2.0.1,2.0.1-123",
+        "2.0.1-xyz,2.0.1-123"
+    })
+    public void should_CompareMavenOrder_When_ComparableVersionCases(String lowerVersion, String higherVersion) {
+        assertComparison(lowerVersion, higherVersion, -1);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "6.1.0rc3,6.1.0",
+        "6.1.0rc3,6.1H.5-beta",
+        "6.1.0,6.1H.5-beta"
+    })
+    public void should_CompareMavenOrder_When_Mng5568Cases(String lowerVersion, String higherVersion) {
+        assertComparison(lowerVersion, higherVersion, -1);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "20190126.230843,1234567890.12345",
+        "1234567890.12345,123456789012345.1H.5-beta",
+        "20190126.230843,123456789012345.1H.5-beta",
+        "123456789012345.1H.5-beta,12345678901234567890.1H.5-beta",
+        "1234567890.12345,12345678901234567890.1H.5-beta",
+        "20190126.230843,12345678901234567890.1H.5-beta"
+    })
+    public void should_CompareMavenOrder_When_Mng6572Cases(String lowerVersion, String higherVersion) {
+        assertComparison(lowerVersion, higherVersion, -1);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0000000000000000001,1",
+        "000000000000000001,1",
+        "00000000000000001,1",
+        "0000000000000001,1",
+        "000000000000001,1",
+        "00000000000001,1",
+        "0000000000001,1",
+        "000000000001,1",
+        "00000000001,1",
+        "0000000001,1",
+        "000000001,1",
+        "00000001,1",
+        "0000001,1",
+        "000001,1",
+        "00001,1",
+        "0001,1",
+        "001,1",
+        "01,1",
+        "1,1"
+    })
+    public void should_CompareMavenEquality_When_LeadingZeroOneCases(String firstVersion, String secondVersion) {
+        assertComparison(firstVersion, secondVersion, 0);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0000000000000000000,0",
+        "000000000000000000,0",
+        "00000000000000000,0",
+        "0000000000000000,0",
+        "000000000000000,0",
+        "00000000000000,0",
+        "0000000000000,0",
+        "000000000000,0",
+        "00000000000,0",
+        "0000000000,0",
+        "000000000,0",
+        "00000000,0",
+        "0000000,0",
+        "000000,0",
+        "00000,0",
+        "0000,0",
+        "000,0",
+        "00,0",
+        "0,0"
+    })
+    public void should_CompareMavenEquality_When_LeadingZeroZeroCases(String firstVersion, String secondVersion) {
+        assertComparison(firstVersion, secondVersion, 0);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1-0.alpha,1",
+        "1-0.beta,1",
+        "1-0.alpha,1-0.beta"
+    })
+    public void should_CompareMavenOrder_When_Mng6964Cases(String lowerVersion, String higherVersion) {
+        assertComparison(lowerVersion, higherVersion, -1);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1.0.0.abc1,1.0.0-abc2",
+        "1.0.0.alpha1,1.0.0-alpha2",
+        "1.0.0.a1,1.0.0-a2",
+        "1.0.0.beta1,1.0.0-beta2",
+        "1.0.0.b1,1.0.0-b2",
+        "1.0.0.def1,1.0.0-def2",
+        "1.0.0.milestone1,1.0.0-milestone2",
+        "1.0.0.m1,1.0.0-m2",
+        "1.0.0.RC1,1.0.0-RC2"
+    })
+    public void should_CompareMavenOrder_When_Mng7644Cases(String lowerVersion, String higherVersion) {
+        assertComparison(lowerVersion, higherVersion, -1);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "2-abc,2.0.abc",
+        "2-abc,2.0.0.abc",
+        "2.0.abc,2.0.0.abc",
+        "2-alpha,2.0.alpha",
+        "2-alpha,2.0.0.alpha",
+        "2.0.alpha,2.0.0.alpha",
+        "2-a,2.0.a",
+        "2-a,2.0.0.a",
+        "2.0.a,2.0.0.a",
+        "2-beta,2.0.beta",
+        "2-beta,2.0.0.beta",
+        "2.0.beta,2.0.0.beta",
+        "2-b,2.0.b",
+        "2-b,2.0.0.b",
+        "2.0.b,2.0.0.b",
+        "2-def,2.0.def",
+        "2-def,2.0.0.def",
+        "2.0.def,2.0.0.def",
+        "2-milestone,2.0.milestone",
+        "2-milestone,2.0.0.milestone",
+        "2.0.milestone,2.0.0.milestone",
+        "2-m,2.0.m",
+        "2-m,2.0.0.m",
+        "2.0.m,2.0.0.m",
+        "2-RC,2.0.RC",
+        "2-RC,2.0.0.RC",
+        "2.0.RC,2.0.0.RC"
+    })
+    public void should_CompareMavenEquality_When_Mng7644Cases(String firstVersion, String secondVersion) {
+        assertComparison(firstVersion, secondVersion, 0);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "en,1-abcdefghijklmnopqrstuvwxyz,1-ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "tr,1-abcdefghijklmnopqrstuvwxyz,1-ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    })
+    public void should_CompareMavenCaseInsensitiveBehavior_When_LocaleChanges(String localeTag, String firstVersion, String secondVersion) {
+        Locale originalLocale = Locale.getDefault();
+
+        try {
+            Locale.setDefault(Locale.forLanguageTag(localeTag));
+            assertComparison(firstVersion, secondVersion, 0);
+        } finally {
+            Locale.setDefault(originalLocale);
+        }
+    }
+
+    private void assertComparison(String firstVersion, String secondVersion, int expectedComparison) {
+        int actualComparison = Integer.signum(mavenVersionComparator.compare(firstVersion, secondVersion));
+        assertEquals(expectedComparison, actualComparison, "Mismatch for versions [" + firstVersion + ", " + secondVersion + "]");
     }
 }

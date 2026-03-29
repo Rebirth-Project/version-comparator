@@ -63,7 +63,7 @@ public class MavenRulesVersionComparator implements VersionComparator {
                 token2 = secondVersionTokenList.get(i);
 
                 if (separator1.equals(separator2)) {
-                    compareResult = compareTokens(token1, token2);
+                    compareResult = compareTokens(firstVersionTokenList, secondVersionTokenList, i);
                 } else {
                     compareResult = compareTokensWithSeparator(separator1, token1, token2);
                 }
@@ -76,7 +76,9 @@ public class MavenRulesVersionComparator implements VersionComparator {
         }
     }
 
-    private int compareTokens(String token1, String token2) {
+    private int compareTokens(List<String> firstVersionTokenList, List<String> secondVersionTokenList, int tokenIndex) {
+        String token1 = firstVersionTokenList.get(tokenIndex);
+        String token2 = secondVersionTokenList.get(tokenIndex);
         boolean token1IsNumber = TokenUtils.isNumber(token1);
         boolean token2IsNumber = TokenUtils.isNumber(token2);
         // alpha = a < beta = b < milestone = m < rc = cr < snapshot < '' < final = ga = release < sp
@@ -95,8 +97,8 @@ public class MavenRulesVersionComparator implements VersionComparator {
         }
 
         // Both are strings, compare their order
-        VersionReleaseTypes qualifier1 = VersionReleaseTypes.getValueOfReleaseTypes(token1);
-        VersionReleaseTypes qualifier2 = VersionReleaseTypes.getValueOfReleaseTypes(token2);
+        VersionReleaseTypes qualifier1 = resolveQualifier(firstVersionTokenList, tokenIndex);
+        VersionReleaseTypes qualifier2 = resolveQualifier(secondVersionTokenList, tokenIndex);
 
         // Both qualifiers are known
         if (qualifier1 != null && qualifier2 != null) {
@@ -114,6 +116,35 @@ public class MavenRulesVersionComparator implements VersionComparator {
 
         //If both qualifiers are unknown then compare case-insensitively and normalize the result.
         return Integer.compare(token1.compareToIgnoreCase(token2), 0);
+    }
+
+    /**
+     * Resolves a qualifier token using Maven alias rules.
+     *
+     * <p>Single-letter aliases {@code a}, {@code b} and {@code m} are treated as known
+     * qualifiers only when followed by a numeric token (for example {@code 1a1},
+     * {@code 1-b2}, {@code 1.m3}). In other contexts they are treated as unknown
+     * qualifiers and compared lexicographically.</p>
+     *
+     * @param tokenList The parsed version token list.
+     * @param tokenIndex The index of the current qualifier token.
+     *
+     * @return The resolved release type or {@code null} for unknown qualifiers.
+     */
+    private VersionReleaseTypes resolveQualifier(List<String> tokenList, int tokenIndex) {
+        VersionReleaseTypes qualifier = VersionReleaseTypes.getValueOfReleaseTypes(tokenList.get(tokenIndex));
+
+        if (qualifier == VersionReleaseTypes.A || qualifier == VersionReleaseTypes.B || qualifier == VersionReleaseTypes.M) {
+            // For single-letter aliases Maven requires a following numeric token.
+            int nextTokenIndex = tokenIndex + 2;
+            if (nextTokenIndex >= tokenList.size()) {
+                return null;
+            }
+
+            return TokenUtils.isNumber(tokenList.get(nextTokenIndex)) ? qualifier : null;
+        }
+
+        return qualifier;
     }
 
     private int compareTokensWithSeparator(String separator1, String token1, String token2) {
@@ -140,6 +171,8 @@ public class MavenRulesVersionComparator implements VersionComparator {
 
     /**
      * Compares numeric tokens without integer parsing to avoid overflow.
+     * Leading zeros are ignored to match Maven numeric-token ordering
+     * (for example {@code 0001} equals {@code 1}).
      *
      * @param token1 The first numeric token.
      * @param token2 The second numeric token.
@@ -148,11 +181,31 @@ public class MavenRulesVersionComparator implements VersionComparator {
      * or lesser (-1) than the second token.
      */
     private int compareNumericTokens(String token1, String token2) {
-        int lengthComparison = Integer.compare(token1.length(), token2.length());
+        String normalizedToken1 = normalizeNumericToken(token1);
+        String normalizedToken2 = normalizeNumericToken(token2);
+
+        int lengthComparison = Integer.compare(normalizedToken1.length(), normalizedToken2.length());
         if (lengthComparison != 0) {
             return lengthComparison;
         }
 
-        return Integer.compare(token1.compareTo(token2), 0);
+        return Integer.compare(normalizedToken1.compareTo(normalizedToken2), 0);
+    }
+
+    /**
+     * Normalizes a numeric token by removing leading zeroes while preserving one zero
+     * for all-zero values.
+     *
+     * @param token The numeric token to normalize.
+     *
+     * @return The normalized numeric token.
+     */
+    private String normalizeNumericToken(String token) {
+        int index = 0;
+        while (index < token.length() - 1 && token.charAt(index) == '0') {
+            index++;
+        }
+
+        return token.substring(index);
     }
 }

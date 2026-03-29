@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
 
 public class MavenRulesVersionParserTest {
 
@@ -37,17 +37,7 @@ public class MavenRulesVersionParserTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-        "a",
-        "1.02",
-        "001",
-        "1&-ok",
-        "1-beta.09",
-        "2.3.3.3-b01",
-        "''",
-        "' '",
-        "'   '"
-    })
+    @NullSource
     public void invalidVersionsTest(String invalidVersion) {
         assertThrows(IllegalArgumentException.class, () -> {
             parser.parseVersion(invalidVersion);
@@ -67,6 +57,17 @@ public class MavenRulesVersionParserTest {
                 Arguments.of("1-sp-1", new Version(Arrays.asList("1", "-", "sp", "-", "1"))),
                 Arguments.of("1-ga.1", new Version(Arrays.asList("1", "-", "ga", ".", "1"))),
                 Arguments.of("1-ga-1", new Version(Arrays.asList("1", "-", "1"))),
+                Arguments.of("a", new Version(Arrays.asList("a"))),
+                Arguments.of("v", new Version(Arrays.asList("v"))),
+                Arguments.of("abc", new Version(Arrays.asList("abc"))),
+                Arguments.of("v1", new Version(Arrays.asList("v", "-", "1"))),
+                Arguments.of("-1", new Version(Arrays.asList("0", "-", "1"))),
+                Arguments.of(".1", new Version(Arrays.asList("0", ".", "1"))),
+                Arguments.of("foo-bar", new Version(Arrays.asList("foo", "-", "bar"))),
+                Arguments.of("1&-ok", new Version(Arrays.asList("1", "-", "&", "-", "ok"))),
+                Arguments.of("1+ok", new Version(Arrays.asList("1", "-", "+ok"))),
+                Arguments.of("1/ok", new Version(Arrays.asList("1", "-", "/ok"))),
+                Arguments.of("1€", new Version(Arrays.asList("1", "-", "€"))),
                 Arguments.of("1-1.foo-bar1baz-.1", new Version(Arrays.asList("1", "-", "1", ".", "foo", "-", "bar", "-", "1", "-", "baz", "-", "0", ".", "1"))),
                 Arguments.of("1-pro-1", new Version(Arrays.asList("1", "-", "pro", "-", "1"))),
                 Arguments.of("1-0.1", new Version(Arrays.asList("1", "-", "0", ".", "1"))),

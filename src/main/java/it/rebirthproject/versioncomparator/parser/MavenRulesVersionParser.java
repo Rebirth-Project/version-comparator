@@ -40,13 +40,6 @@ public class MavenRulesVersionParser implements VersionParser {
         Character c = version.charAt(0);
         MavenCharType previousCharType = getCharType(c);
 
-        if (!previousCharType.equals(MavenCharType.DIGIT)) {
-            throw new IllegalArgumentException("Invalid Maven version string format: does not start with a number \"" + version + "\"");
-        }
-        if (c.equals('0') && TokenUtils.isNumber(version) && version.length() > 1) {
-            throw new IllegalArgumentException("Invalid Maven version string format: starts with 0 \"" + version + "\"");
-        }
-
         //Basically the _ is equivalent to - to maven specifications so we replace it for simplicity
         String replacedVersion = version.replace(MavenConstants.REPLACEBLE_SEPARATOR, MavenConstants.HYPHEN_SEPARATOR);
 
@@ -72,11 +65,7 @@ public class MavenRulesVersionParser implements VersionParser {
         }
         tokenList.add(token.toString());
         
-        //for (String string : tokenList) {
-        //    System.out.println(""+string);
-        //}
-        
-        checkForInvalidNumericTokens(version, tokenList);
+        normalizeDotQualifierTransition(tokenList);
         replaceEmptyTokensWithZero(tokenList);
         trimNullValues(tokenList);
 
@@ -92,15 +81,9 @@ public class MavenRulesVersionParser implements VersionParser {
             if (TokenUtils.isSeparator(c)) {
                 return MavenCharType.SEPARATOR;
             } else {
-                throw new IllegalArgumentException("Invalid Maven version string format: version contains unacceptable characters. \"" + c + "\"");
-            }
-        }
-    }
-
-    private void checkForInvalidNumericTokens(String version, List<String> tokens) throws IllegalArgumentException {
-        for (String token : tokens) {
-            if (TokenUtils.isNumber(token) && token.length() > 1 && token.startsWith("0")) {
-                throw new IllegalArgumentException("Invalid Maven version string format: numbers starting with 0 are not allowed \"" + version + "\"");
+                // Maven ComparableVersion is permissive for non-separator symbols,
+                // so we treat them as string qualifier characters.
+                return MavenCharType.LETTER;
             }
         }
     }
@@ -109,6 +92,28 @@ public class MavenRulesVersionParser implements VersionParser {
         for (int i = 0; i < tokens.size(); i++) {
             if (tokens.get(i).isEmpty()) {
                 tokens.set(i, MavenConstants.ZERO);
+            }
+        }
+    }
+
+    /**
+     * Normalizes dot-separated qualifiers to Maven canonical structure.
+     *
+     * <p>When a dot precedes a qualifier token, it is treated as a hyphen separator.
+     * Expressions like "2.0.0.alpha" and "2-alpha" become equivalent after
+     * null-value trimming.</p>
+     *
+     * @param tokens The parsed token list to normalize.
+     */
+    private void normalizeDotQualifierTransition(List<String> tokens) {
+        for (int i = 1; i < tokens.size() - 1; i++) {
+            if (MavenConstants.FULLSTOP_SEPARATOR.toString().equals(tokens.get(i))
+                    && !TokenUtils.isNumber(tokens.get(i + 1))
+                    // Keep the historical behavior for "-N.qualifier" segments (e.g. "1-1.foo").
+                    // We only normalize dot-to-hyphen for the plain dot-chain form used by MNG-7644
+                    // (e.g. "2.0.alpha" -> "2-0-alpha" before trimming).
+                    && (i < 2 || !MavenConstants.HYPHEN_SEPARATOR.toString().equals(tokens.get(i - 2)))) {
+                tokens.set(i, MavenConstants.HYPHEN_SEPARATOR.toString());
             }
         }
     }

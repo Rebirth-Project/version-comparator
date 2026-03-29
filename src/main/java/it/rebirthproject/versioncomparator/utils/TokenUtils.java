@@ -29,6 +29,10 @@ public class TokenUtils {
     }
 
     public static boolean isNullValue(String token) {
-        return token.equals(MavenConstants.ZERO) || token.equals(VersionReleaseTypes.EMPTY.getValue()) || token.toUpperCase().equals(VersionReleaseTypes.GA.getValue()) || token.toUpperCase().equals(VersionReleaseTypes.FINAL.getValue());
+        return token.equals(MavenConstants.ZERO)
+                || token.equals(VersionReleaseTypes.EMPTY.getValue())
+                || token.toUpperCase().equals(VersionReleaseTypes.GA.getValue())
+                || token.toUpperCase().equals(VersionReleaseTypes.FINAL.getValue())
+                || token.toUpperCase().equals(VersionReleaseTypes.RELEASE.getValue());
     }
 }

@@ -102,7 +102,7 @@ public enum VersionReleaseTypes {
     public static VersionReleaseTypes getValueOfReleaseTypes(String value) {
         VersionReleaseTypes[] lista = VersionReleaseTypes.values();
         for (VersionReleaseTypes valoreReleaseType : lista) {
-            if (valoreReleaseType.value.compareToIgnoreCase(value) == 0) {
+            if (valoreReleaseType.value.compareToIgnoreCase(value) == 0 || valoreReleaseType.name().compareToIgnoreCase(value) == 0) {
                 return valoreReleaseType;
             }
         }
