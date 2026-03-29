@@ -40,7 +40,7 @@ dependencies {
 <dependency>
     <groupId>it.rebirthproject</groupId>
     <artifactId>version-comparator</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 
